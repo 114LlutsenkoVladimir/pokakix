@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://5m5tkpf7g62b"]
+
+[ext_resource type="Script" uid="uid://043jvytbi4h8" path="res://characters/character_states/player_state.gd" id="1_74skl"]
+[ext_resource type="Script" uid="uid://c88d8fbj42gmp" path="res://characters/character_states/normal_state.gd" id="2_2gtnc"]
+[ext_resource type="Script" uid="uid://c2gf8jeofxegu" path="res://characters/character_states/rope_state.gd" id="3_2gtnc"]
+[ext_resource type="Script" uid="uid://i4p8hbeexlpr" path="res://characters/character_states/rope_physic_model.gd" id="4_c5lbt"]
+
+[node name="States" type="Node"]
+
+[node name="PlayerState" type="Node" parent="."]
+script = ExtResource("1_74skl")
+
+[node name="NormalState" type="Node" parent="."]
+script = ExtResource("2_2gtnc")
+
+[node name="RopeState" type="Node" parent="."]
+script = ExtResource("3_2gtnc")
+
+[node name="RopePhysicModel" type="Node" parent="RopeState"]
+script = ExtResource("4_c5lbt")
+
+[node name="RopeLine" type="Line2D" parent="RopeState"]

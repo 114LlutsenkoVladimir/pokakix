@@ -1,0 +1,74 @@
+[gd_scene load_steps=9 format=3 uid="uid://ri7ixsd3x67k"]
+
+[ext_resource type="Texture2D" uid="uid://cx0g7icryln6g" path="res://maps/asteroid/asteroid.png" id="2_dw1tg"]
+[ext_resource type="Script" uid="uid://bwajtrweolh6h" path="res://terrain.gd" id="2_eqrm5"]
+[ext_resource type="Shader" uid="uid://bov4ercn6bmhv" path="res://terrain_bit_map_test.gdshader" id="2_mj0ip"]
+[ext_resource type="Texture2D" uid="uid://bmdreye6cy6sq" path="res://maps/circle4.png" id="2_n4ilf"]
+[ext_resource type="PackedScene" uid="uid://cxfp5vqvqwmo7" path="res://characters/bob/bob_bitmap.tscn" id="4_eqrm5"]
+[ext_resource type="Script" uid="uid://2oi4opi24g4j" path="res://Camera2D.gd" id="4_oy3ru"]
+[ext_resource type="Script" uid="uid://cjf4ooncmobr8" path="res://characters/bob/bob_bitmap_rect_hitbox.gd" id="7_n4ilf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n4ilf"]
+shader = ExtResource("2_mj0ip")
+shader_parameter/cut = 0.99
+
+[node name="TerrainBitMapTest" type="Node2D"]
+position = Vector2(1000, 500)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_eqrm5")
+CIRCLE_TEX = ExtResource("2_n4ilf")
+
+[node name="Sprite2D" type="Sprite2D" parent="Terrain"]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("ShaderMaterial_n4ilf")
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_dw1tg")
+
+[node name="MaskVP" type="SubViewport" parent="Terrain"]
+disable_3d = true
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="Terrain/MaskVP"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 4904.0
+offset_bottom = 2788.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stamps" type="Node2D" parent="Terrain/MaskVP"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(21, -135)
+limit_left = 0
+limit_top = 0
+limit_right = 1920
+limit_bottom = 1080
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+editor_draw_limits = true
+script = ExtResource("4_oy3ru")
+
+[node name="bob" parent="." instance=ExtResource("4_eqrm5")]
+scale = Vector2(0.03, 0.03)
+script = ExtResource("7_n4ilf")
+TERRAIN_PATH = NodePath("../Terrain")
+WIDTH = 4.0
+HEIGHT = 16.0
+SAMPLES_PER_SIDE = 5
+PREJUMP_LIFT_PX = 2
+SPEED = 50
+possible_jumps = 1
+LEDGE_CARRY_MIN_SPEED = 22.7
+LEDGE_CARRY_MAX_SPEED = 120.0
+LEDGE_CARRY_DECAY = 0.0
+
+[node name="character_trail" parent="bob" index="2"]
+targetPath = NodePath("..")
+
+[editable path="bob"]
+[editable path="bob/States"]

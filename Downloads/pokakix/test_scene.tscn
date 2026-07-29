@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://beqqrrek4v76b"]
+
+[ext_resource type="Texture2D" uid="uid://bbftmr3wjhuu8" path="res://characters/bob/telo_s_kolesami.png" id="1_sasra"]
+[ext_resource type="PackedScene" uid="uid://os6dq5d0r60p" path="res://trail.tscn" id="2_coq8p"]
+[ext_resource type="Texture2D" uid="uid://cx0g7icryln6g" path="res://maps/asteroid/asteroid.png" id="3_2nij2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7cbxl"]
+radius = 298.38
+
+[sub_resource type="Gradient" id="Gradient_8pr8v"]
+offsets = PackedFloat32Array(0, 0.986755, 1)
+colors = PackedColorArray(0, 0.443137, 1, 0, 0.498022, 0.677441, 1, 1, 1, 1, 1, 1)
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="bobTest" type="CharacterBody2D" parent="."]
+position = Vector2(971, 316)
+scale = Vector2(0.03, 0.03)
+
+[node name="Sprite2D" type="Sprite2D" parent="bobTest"]
+texture = ExtResource("1_sasra")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="bobTest"]
+visible = false
+position = Vector2(-2, 13)
+shape = SubResource("CircleShape2D_7cbxl")
+
+[node name="character_trail" parent="bobTest" instance=ExtResource("2_coq8p")]
+default_color = Color(0.431373, 0.611765, 1, 1)
+gradient = SubResource("Gradient_8pr8v")
+
+[node name="map" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="map"]
+position = Vector2(1000, 499)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_2nij2")

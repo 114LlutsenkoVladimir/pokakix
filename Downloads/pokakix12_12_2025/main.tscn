@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://ca8qymm6vmgpp"]
+
+[ext_resource type="Script" uid="uid://80yrlruq4nvp" path="res://main.gd" id="1_i5q3g"]
+[ext_resource type="PackedScene" uid="uid://bnmspyp7p8b1t" path="res://characters/bob/bob.tscn" id="3_236fb"]
+[ext_resource type="PackedScene" uid="uid://dnhnvtxkve8d7" path="res://maps/asteroid/asteroid.tscn" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://2oi4opi24g4j" path="res://Camera2D.gd" id="4_34024"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_i5q3g")
+
+[node name="bob" parent="." instance=ExtResource("3_236fb")]
+position = Vector2(941.00006, 206.00002)
+scale = Vector2(0.03, 0.03)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 326)
+limit_left = 0
+limit_top = 0
+limit_right = 1920
+limit_bottom = 1080
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+editor_draw_limits = true
+script = ExtResource("4_34024")
+terrain_sprite_path = NodePath("../asteroid/asteroid")
+
+[node name="asteroid" parent="." instance=ExtResource("4_1bvp3")]
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(979, 219)
+
+[editable path="asteroid"]

@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://br406r760ivt6"]
+
+[ext_resource type="Script" uid="uid://c2w4cujeihqp3" path="res://shell/bullet/bullet.gd" id="1_pbj5y"]
+[ext_resource type="Texture2D" uid="uid://d1dl7ul76g0ju" path="res://shell/bullet/пуля2.png" id="2_edd0l"]
+[ext_resource type="Script" uid="uid://275k5ifo53bs" path="res://shell/bullet/bullet_trail.gd" id="3_edd0l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7su3c"]
+size = Vector2(20, 51.437347)
+
+[sub_resource type="Curve" id="Curve_edd0l"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_edd0l"]
+colors = PackedColorArray(0.95686275, 0.9529412, 0.8980392, 0.46666667, 0.9764706, 0.7607843, 0, 0.9764706)
+
+[node name="Bullet" type="Node2D"]
+script = ExtResource("1_pbj5y")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -8.881784e-16)
+rotation = -1.5707964
+scale = Vector2(0.038882256, 0.038882256)
+shape = SubResource("RectangleShape2D_7su3c")
+
+[node name="bullet" type="Sprite2D" parent="."]
+rotation = 3.1415927
+scale = Vector2(0.008530609, 0.008591899)
+texture = ExtResource("2_edd0l")
+
+[node name="Line2D" type="Line2D" parent="."]
+width = 2.0
+width_curve = SubResource("Curve_edd0l")
+default_color = Color(0.9490196, 0.9490196, 0, 0.5254902)
+gradient = SubResource("Gradient_edd0l")
+script = ExtResource("3_edd0l")
+targetPath = NodePath("..")
+trailLength = 7
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

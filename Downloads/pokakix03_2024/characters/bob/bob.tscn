@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=3 uid="uid://bnmspyp7p8b1t"]
+
+[ext_resource type="Script" path="res://characters/bob/bob.gd" id="1_kdw4r"]
+[ext_resource type="Texture2D" uid="uid://bbftmr3wjhuu8" path="res://characters/bob/telo_s_kolesami.png" id="1_so25c"]
+[ext_resource type="Texture2D" uid="uid://45dof8ex7q4p" path="res://characters/bob/propeller.png" id="2_6mqu1"]
+[ext_resource type="Texture2D" uid="uid://gnku0jdlf5xq" path="res://characters/bob/ruka_speredi.png" id="2_wc82f"]
+[ext_resource type="Texture2D" uid="uid://bcb7lnnkahcv0" path="res://characters/bob/ружьё.png" id="3_yusf5"]
+[ext_resource type="PackedScene" uid="uid://os6dq5d0r60p" path="res://trail.tscn" id="4_ap7h7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vueeb"]
+radius = 298.38
+
+[sub_resource type="Gradient" id="Gradient_qwqkp"]
+offsets = PackedFloat32Array(0, 0.986755, 1)
+colors = PackedColorArray(0, 0.443137, 1, 0, 0.498022, 0.677441, 1, 1, 1, 1, 1, 1)
+
+[node name="bob" type="CharacterBody2D"]
+editor_description = "сися"
+position = Vector2(1, 0)
+slide_on_ceiling = false
+floor_constant_speed = true
+floor_max_angle = 1.39626
+floor_snap_length = 20.0
+script = ExtResource("1_kdw4r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 13)
+shape = SubResource("CircleShape2D_vueeb")
+
+[node name="bob" type="Sprite2D" parent="."]
+z_index = 2
+
+[node name="hand" type="Sprite2D" parent="bob"]
+z_index = 4
+position = Vector2(161, 116)
+texture = ExtResource("2_wc82f")
+
+[node name="weapon" type="Sprite2D" parent="bob"]
+z_index = 3
+position = Vector2(-158.646, 90.125)
+scale = Vector2(0.326671, 0.326671)
+texture = ExtResource("3_yusf5")
+
+[node name="body" type="Sprite2D" parent="bob"]
+texture_filter = 2
+position = Vector2(0, -4)
+texture = ExtResource("1_so25c")
+
+[node name="propeller" type="Sprite2D" parent="bob"]
+texture_filter = 2
+position = Vector2(30, -361)
+texture = ExtResource("2_6mqu1")
+
+[node name="character_trail" parent="." instance=ExtResource("4_ap7h7")]
+visible = false
+default_color = Color(0.431373, 0.611765, 1, 1)
+gradient = SubResource("Gradient_qwqkp")
+targetPath = NodePath("..")
+
+[node name="health" type="Label" parent="."]
+offset_left = -394.0
+offset_top = -895.0
+offset_right = 398.0
+offset_bottom = -581.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 300
+text = "500"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="nickname" type="Label" parent="."]
+offset_left = -395.0
+offset_top = -1209.0
+offset_right = 397.0
+offset_bottom = -895.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 300
+text = "Боб"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

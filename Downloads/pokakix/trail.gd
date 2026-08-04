@@ -3,7 +3,7 @@ extends Line2D
 var target
 var point
 @export var targetPath : NodePath
-@export var trailLength = 20
+@export var trailLength = 50
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

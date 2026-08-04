@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bnmspyp7p8b1t"]
+[gd_scene load_steps=12 format=3 uid="uid://bnmspyp7p8b1t"]
 
 [ext_resource type="Script" uid="uid://cg0wb6cfkplir" path="res://characters/bob/bob.gd" id="1_kdw4r"]
 [ext_resource type="Texture2D" uid="uid://bbftmr3wjhuu8" path="res://characters/bob/telo_s_kolesami.png" id="1_so25c"]
@@ -8,13 +8,14 @@
 [ext_resource type="PackedScene" uid="uid://os6dq5d0r60p" path="res://trail.tscn" id="4_ap7h7"]
 [ext_resource type="Texture2D" uid="uid://bymj3ed2mxchl" path="res://characters/bob/ruka_szadi.png" id="6_68kfn"]
 [ext_resource type="Texture2D" uid="uid://d36bvr55k2bl3" path="res://characters/bob/pritsel.png" id="7_4hgur"]
+[ext_resource type="Script" uid="uid://ce6c7ikb4csxj" path="res://characters/bob/ceiling_hit_detection.gd" id="9_4hgur"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vueeb"]
 radius = 298.38
 
 [sub_resource type="Gradient" id="Gradient_qwqkp"]
-offsets = PackedFloat32Array(0, 0.986755, 1)
-colors = PackedColorArray(0, 0.443137, 1, 0, 0.498022, 0.677441, 1, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.55333334, 0.87333333)
+colors = PackedColorArray(0, 0.443137, 1, 0, 0, 0.9372549, 0.93333334, 0.3529412, 0, 0.34901962, 0.8980392, 0.5803922)
 
 [node name="bob" type="CharacterBody2D"]
 editor_description = "сися"
@@ -103,3 +104,18 @@ theme_override_font_sizes/font_size = 300
 text = "Боб"
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="ceiling_hit_detection" type="Node2D" parent="."]
+script = ExtResource("9_4hgur")
+
+[node name="ray_middle" type="RayCast2D" parent="ceiling_hit_detection"]
+position = Vector2(-1, -284)
+target_position = Vector2(0, -60)
+
+[node name="ray_left" type="RayCast2D" parent="ceiling_hit_detection"]
+position = Vector2(-151, -245)
+target_position = Vector2(-10, -60)
+
+[node name="ray_right" type="RayCast2D" parent="ceiling_hit_detection"]
+position = Vector2(148, -245)
+target_position = Vector2(10, -60)

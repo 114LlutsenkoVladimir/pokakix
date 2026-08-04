@@ -18,6 +18,8 @@ extends CharacterBody2D
 var _aim_deg_local: float = 0.0
 var shown_deg: float = 0.0
 
+var BulletScene := preload("res://shell/bullet/bullet.tscn")
+
 # Блок движения до указанного физического кадра (включительно)
 var _no_move_until_frame: int = -1
 
@@ -32,11 +34,15 @@ var _bypass_shift_delay_this_frame: bool = false
 var jump_delay_time: float = 0.5
 var rotate: bool = true
 var rotate_timer: int = 0
+
 # Прыжки
-@export var possible_jumps: int = 2        # СКОЛЬКО ДОП. ПРЫЖКОВ В ВОЗДУХЕ (0 = только с земли)
+@export var possible_jumps: int = 1        # СКОЛЬКО ДОП. ПРЫЖКОВ В ВОЗДУХЕ (0 = только с земли)
 var possible_jumps_now: int = 0            # текущий остаток (только для воздуха)
 var _jumped_this_frame: bool = false
 var _was_on_floor: bool = false
+var jump_delay: int = 20	# Тут ставить задержку между прыжками 
+var jump_counter: int = 0
+@export var JUMP_STRENGHT: int = 0 # Параметр сила прыжка для сильных лёнчиков
 
 func _ready() -> void:
 	await get_tree().create_timer(0.4).timeout
@@ -48,19 +54,19 @@ func _physics_process(delta: float) -> void:
 	var frame: int = Engine.get_physics_frames()
 	_bypass_shift_delay_this_frame = false
 	_jumped_this_frame = false
+
 	# --- Прыжки: ловим нажатие ОДИН раз ---
 	# Первый прыжок с земли НЕ тратит запас. В воздухе прыжок тратит one charge.
-	if Input.is_action_just_pressed("jump_fwd") or Input.is_action_just_pressed("jump_bwd"):
+	if Input.is_action_pressed("jump_fwd") or Input.is_action_pressed("jump_bwd"):
 		if is_on_floor():
-			if Input.is_action_just_pressed("jump_fwd"):
+			if Input.is_action_pressed("jump_fwd"):
 				_jump_fwd_impl()
 			else:
 				_jump_bwd_impl()
 			_jumped_this_frame = true
 		else:
 			if possible_jumps_now > 0:
-				possible_jumps_now -= 1
-				if Input.is_action_just_pressed("jump_fwd"):
+				if Input.is_action_pressed("jump_fwd"):
 					_jump_fwd_impl()
 				else:
 					_jump_bwd_impl()
@@ -95,6 +101,9 @@ func _physics_process(delta: float) -> void:
 		rotate_timer += 1
 		if rotate_timer >= 30:
 			rotate = true
+	
+	if jump_counter <= jump_delay:
+		jump_counter = jump_counter + 1
 
 	# Телепорт по клику (как было)
 	if Input.is_action_just_pressed("action"):
@@ -116,7 +125,7 @@ func _physics_process(delta: float) -> void:
 
 	# Обновление прицела
 	_update_weapon_aim(delta)
-	
+
 	# Учёт удержания направления для задержки при Shift
 	var left_p: bool  = Input.is_action_pressed("left")
 	var right_p: bool = Input.is_action_pressed("right")
@@ -183,12 +192,14 @@ func _update_weapon_aim(delta: float) -> void:
 
 # ---------- НАЗЕМНОЕ ДВИЖЕНИЕ + SHIFT-СТАН ----------
 func _handle_on_ground() -> void:
-	var frame: int = Engine.get_physics_frames()
+	if Input.is_action_just_pressed("fire"):
+		_shoot()
 
-	# единичные нажатия при зажатом Shift
 	var left_j: bool  = Input.is_action_just_pressed("left")
 	var right_j: bool = Input.is_action_just_pressed("right")
 	var shift_held: bool = Input.is_action_pressed("shift")
+
+	var frame: int = Engine.get_physics_frames()
 
 	if shift_held and (left_j or right_j):
 		var tap_dir: int = 0
@@ -255,14 +266,42 @@ func _handle_on_ground() -> void:
 
 # ---------- РЕАЛИЗАЦИЯ ПРЫЖКОВ (без списания попыток здесь) ----------
 func _jump_fwd_impl() -> void:
-	velocity.y = -200.0
-	velocity.x = -125.0 * $bob.scale.x
+	var shift_held: bool = Input.is_action_pressed("shift")
+	if jump_counter > jump_delay:
+		jump_counter = 0
+		if !is_on_floor():
+				possible_jumps_now -= 1
+		if shift_held:
+			velocity.y = -300.0
+			velocity.x = -175.0 * $bob.scale.x
+		if !shift_held:	
+			velocity.y = -200.0
+			velocity.x = -125.0 * $bob.scale.x
+	else:
+		pass
 
 func _jump_bwd_impl() -> void:
-	velocity.y = -300.0
-	await get_tree().create_timer(0.1).timeout
-	velocity.x = 85.0 * $bob.scale.x
-	rotate = true
+	var shift_held: bool = Input.is_action_pressed("shift")
+	if jump_counter > jump_delay:
+		jump_counter = 0
+		if !is_on_floor():
+				possible_jumps_now -= 1
+		if shift_held:
+			velocity.y = -400.0
+			if velocity.x > 100 or velocity.x < -100:
+				velocity.x = 0
+			await get_tree().create_timer(0.1).timeout
+			velocity.x = 100.0 * $bob.scale.x
+			rotate = true
+		if !shift_held:	
+			velocity.y = -300.0
+			if velocity.x > 100 or velocity.x < -100:
+				velocity.x = 0
+			await get_tree().create_timer(0.1).timeout
+			velocity.x = 85.0 * $bob.scale.x
+			rotate = true
+	else:
+		pass
 
 # ---------- ПОКАЗ/СКРЫТИЕ ОРУЖИЯ ----------
 func hide_weapon() -> void:
@@ -280,15 +319,15 @@ func show_weapon() -> void:
 	$bob/weapon_pivot.rotation = deg_to_rad(shown_deg)
 
 # ---------- ВЫСТРЕЛ ----------
+func _shoot() -> void:
+	var b := BulletScene.instantiate()
+	# позиция вылета
+	b.global_position = $bob/weapon_pivot/muzzle.global_position
+	# направление по стволу (устойчиво к флипу)
+	var pivot := $bob/weapon_pivot
+	var mz := $bob/weapon_pivot/muzzle
+	var dir: Vector2 = (mz.global_position - pivot.global_position).normalized()
+	b.setup(dir, self)
+	get_tree().current_scene.add_child(b)
 
-func _set_weapon(weapon) -> void:
-	if weapon == null:
-		return
-
-	var gf := weapon.get_node("grip_front") as Marker2D
-	var gb := weapon.get_node("grip_back") as Marker2D
-
-	$bob/weapon_pivot/hand.global_position = gf.global_position
-	$bob/weapon_pivot/hand_bwd.global_position = gb.global_position
-	
-	
+signal collide_with_map

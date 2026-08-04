@@ -1,13 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://ca8qymm6vmgpp"]
+[gd_scene load_steps=17 format=3 uid="uid://ca8qymm6vmgpp"]
 
 [ext_resource type="Script" uid="uid://80yrlruq4nvp" path="res://main.gd" id="1_i5q3g"]
 [ext_resource type="PackedScene" uid="uid://bnmspyp7p8b1t" path="res://characters/bob/bob.tscn" id="3_236fb"]
+[ext_resource type="Script" uid="uid://bm0p80djemyan" path="res://characters/bob/bob_amazing.gd" id="3_efxa6"]
+[ext_resource type="Script" uid="uid://yviub0yoaru0" path="res://movement.gd" id="3_kek77"]
 [ext_resource type="PackedScene" uid="uid://dnhnvtxkve8d7" path="res://maps/asteroid/asteroid.tscn" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://2oi4opi24g4j" path="res://Camera2D.gd" id="4_34024"]
+[ext_resource type="Script" uid="uid://d0pjjdlls281m" path="res://jumper.gd" id="4_dg77c"]
+[ext_resource type="Texture2D" uid="uid://bcfktco83w5y1" path="res://8inVftJqLpI.jpg" id="4_vivmo"]
 [ext_resource type="Texture2D" uid="uid://bmdreye6cy6sq" path="res://maps/circle4.png" id="5_lquwl"]
 [ext_resource type="Shader" uid="uid://ned5awrgleoc" path="res://maps/asteroid/asteroid.gdshader" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://ca2bnbdhb20p1" path="res://static_body_2d.gd" id="6_272bh"]
+[ext_resource type="Script" uid="uid://c1kup1jovfnky" path="res://pritselix.gd" id="6_dg77c"]
 [ext_resource type="Script" uid="uid://bxjo7ofdxuxrk" path="res://area_2d.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://diyrsmbvxcq3s" path="res://visual_component.gd" id="7_ycdy4"]
+[ext_resource type="Script" uid="uid://bv6xx85gojvmp" path="res://debug.gd" id="8_w48qg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("6_7mycd")
@@ -18,9 +25,58 @@ script = ExtResource("1_i5q3g")
 [node name="bob" parent="." instance=ExtResource("3_236fb")]
 position = Vector2(975, 331)
 scale = Vector2(0.03, 0.03)
+script = ExtResource("3_efxa6")
 
 [node name="character_trail" parent="bob" index="2"]
+visible = true
+width = 20.0
+default_color = Color(1, 1, 1, 1)
+gradient = null
+texture = ExtResource("4_vivmo")
+texture_mode = 2
+sharp_limit = 90.0
+round_precision = 32
 targetPath = NodePath("..")
+trailLength = 100
+
+[node name="jumper" type="Node2D" parent="bob"]
+position = Vector2(-32499.996, -11033.332)
+scale = Vector2(33.33333, 33.33333)
+script = ExtResource("4_dg77c")
+
+[node name="jump_delay_timer" type="Timer" parent="bob/jumper"]
+wait_time = 0.2
+one_shot = true
+autostart = true
+
+[node name="bwd_jump_fix_timer" type="Timer" parent="bob/jumper"]
+wait_time = 0.1
+one_shot = true
+autostart = true
+
+[node name="movement" type="Node2D" parent="bob"]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("3_kek77")
+
+[node name="pritselix" type="Node2D" parent="bob"]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("6_dg77c")
+
+[node name="visual_vertoleta" type="Node2D" parent="bob"]
+script = ExtResource("7_ycdy4")
+
+[node name="debug" type="Node2D" parent="bob"]
+script = ExtResource("8_w48qg")
+
+[node name="debug_text" type="Label" parent="bob/debug"]
+offset_left = 1197.0
+offset_top = -980.0
+offset_right = 2252.0
+offset_bottom = -657.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 164
+text = "0,0"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 326)

@@ -48,9 +48,9 @@ func _ready() -> void:
 		debug_sprite.scale = Vector2(0.5, 0.5)
 		print("Отладочный спрайт создан.")
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		carve_hole(get_global_mouse_position(), 250.0)
+#func _input(event: InputEvent) -> void:
+	#if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		#carve_hole(get_global_mouse_position(), 250.0)
 
 func carve_hole(world_pos: Vector2, radius: float) -> void:
 	var local_pos = static_body.to_local(world_pos)

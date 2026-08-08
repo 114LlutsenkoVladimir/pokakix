@@ -2,7 +2,7 @@ extends Camera2D
 
 @export var zoom_min := Vector2(0.5, 0.5)
 @export var zoom_max := Vector2(12.0, 12.0)
-@export var zoom_speed := Vector2(0.2, 0.2)
+@export var zoom_speed := Vector2(0.3, 0.3)
 @export var drag_sens := 1.0
 
 
@@ -24,6 +24,7 @@ func _process(_delta: float) -> void:
 	des_zoom.x = clamp(des_zoom.x, zoom_min.x, zoom_max.x)
 	des_zoom.y = clamp(des_zoom.y, zoom_min.y, zoom_max.y)
 	zoom = lerp(zoom, des_zoom, 0.2)
+	zoom_speed = Vector2(0.15, 0.15)*zoom
 
 	# держим камеру в пределах карты
 	_clamp_to_map()

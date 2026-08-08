@@ -39,4 +39,5 @@ func _jump_bwd_impl(shift_boost) -> void:
 	player.velocity.y = -300.0 * shift_boost
 	$bwd_jump_fix_timer.start()
 	await $bwd_jump_fix_timer.timeout
-	player.velocity.x = 85.0 * shift_boost * -player.facing_direction
+	if not player.is_on_floor() and player.get_slide_collision_count() == 0:
+		player.velocity.x = 85.0 * shift_boost * -player.facing_direction

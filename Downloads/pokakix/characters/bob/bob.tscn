@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bnmspyp7p8b1t"]
+[gd_scene load_steps=11 format=3 uid="uid://bnmspyp7p8b1t"]
 
 [ext_resource type="Script" uid="uid://cg0wb6cfkplir" path="res://characters/bob/bob.gd" id="1_kdw4r"]
 [ext_resource type="Texture2D" uid="uid://bbftmr3wjhuu8" path="res://characters/bob/telo_s_kolesami.png" id="1_so25c"]
@@ -8,10 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://os6dq5d0r60p" path="res://trail.tscn" id="4_ap7h7"]
 [ext_resource type="Texture2D" uid="uid://bymj3ed2mxchl" path="res://characters/bob/ruka_szadi.png" id="6_68kfn"]
 [ext_resource type="Texture2D" uid="uid://d36bvr55k2bl3" path="res://characters/bob/pritsel.png" id="7_4hgur"]
-[ext_resource type="Script" uid="uid://ce6c7ikb4csxj" path="res://characters/bob/ceiling_hit_detection.gd" id="9_4hgur"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_vueeb"]
-radius = 298.38
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_68kfn"]
+radius = 100.0
+height = 600.0
 
 [sub_resource type="Gradient" id="Gradient_qwqkp"]
 offsets = PackedFloat32Array(0, 0.55333334, 0.87333333)
@@ -27,8 +27,8 @@ floor_snap_length = 20.0
 script = ExtResource("1_kdw4r")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2, 13)
-shape = SubResource("CircleShape2D_vueeb")
+position = Vector2(-2, 12)
+shape = SubResource("CapsuleShape2D_68kfn")
 
 [node name="bob" type="Sprite2D" parent="."]
 z_index = 2
@@ -104,18 +104,3 @@ theme_override_font_sizes/font_size = 300
 text = "Боб"
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
-
-[node name="ceiling_hit_detection" type="Node2D" parent="."]
-script = ExtResource("9_4hgur")
-
-[node name="ray_middle" type="RayCast2D" parent="ceiling_hit_detection"]
-position = Vector2(-1, -284)
-target_position = Vector2(0, -60)
-
-[node name="ray_left" type="RayCast2D" parent="ceiling_hit_detection"]
-position = Vector2(-151, -245)
-target_position = Vector2(-10, -60)
-
-[node name="ray_right" type="RayCast2D" parent="ceiling_hit_detection"]
-position = Vector2(148, -245)
-target_position = Vector2(10, -60)

@@ -8,4 +8,4 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if $ray_middle.is_colliding() or $ray_left.is_colliding() or $ray_right.is_colliding():
 		if player.left_floor:
-			player.velocity.x /= 2
+			player.velocity.x = 0

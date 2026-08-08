@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://bmdreye6cy6sq" path="res://maps/circle4.png" id="5_lquwl"]
 [ext_resource type="Shader" uid="uid://ned5awrgleoc" path="res://maps/asteroid/asteroid.gdshader" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://ca2bnbdhb20p1" path="res://static_body_2d.gd" id="6_272bh"]
-[ext_resource type="Script" uid="uid://c1kup1jovfnky" path="res://pritselix.gd" id="6_dg77c"]
 [ext_resource type="Script" uid="uid://bxjo7ofdxuxrk" path="res://area_2d.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://p8avwtowi1op" path="res://pritselix_new_2099.gd" id="7_vivmo"]
 [ext_resource type="Script" uid="uid://diyrsmbvxcq3s" path="res://visual_component.gd" id="7_ycdy4"]
 [ext_resource type="Script" uid="uid://bv6xx85gojvmp" path="res://debug.gd" id="8_w48qg"]
 
@@ -60,7 +60,7 @@ script = ExtResource("3_kek77")
 
 [node name="pritselix" type="Node2D" parent="bob"]
 scale = Vector2(0.99999994, 0.99999994)
-script = ExtResource("6_dg77c")
+script = ExtResource("7_vivmo")
 
 [node name="visual_vertoleta" type="Node2D" parent="bob"]
 script = ExtResource("7_ycdy4")

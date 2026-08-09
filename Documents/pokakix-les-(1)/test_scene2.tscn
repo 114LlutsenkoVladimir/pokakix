@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnqlae8uen1yr"]
+
+[ext_resource type="Script" uid="uid://417vltorcvgk" path="res://map_node.gd" id="1_04rak"]
+[ext_resource type="Texture2D" uid="uid://dbc7kvmfs1yb6" path="res://maps/test/test_map.png" id="2_kmmf5"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="mapNode" type="Node2D" parent="."]
+script = ExtResource("1_04rak")
+
+[node name="mapsprite" type="Sprite2D" parent="mapNode"]
+scale = Vector2(0.20677365, 0.20677362)
+texture = ExtResource("2_kmmf5")

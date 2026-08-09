@@ -1,0 +1,105 @@
+[gd_scene load_steps=11 format=3 uid="uid://bnmspyp7p8b1t"]
+
+[ext_resource type="Script" uid="uid://cg0wb6cfkplir" path="res://characters/bob/bob.gd" id="1_kdw4r"]
+[ext_resource type="Texture2D" uid="uid://bbftmr3wjhuu8" path="res://characters/bob/telo_s_kolesami.png" id="1_so25c"]
+[ext_resource type="Texture2D" uid="uid://45dof8ex7q4p" path="res://characters/bob/propeller.png" id="2_6mqu1"]
+[ext_resource type="Texture2D" uid="uid://gnku0jdlf5xq" path="res://characters/bob/ruka_speredi.png" id="2_wc82f"]
+[ext_resource type="Texture2D" uid="uid://bcb7lnnkahcv0" path="res://characters/bob/ружьё.png" id="3_yusf5"]
+[ext_resource type="PackedScene" uid="uid://os6dq5d0r60p" path="res://trail.tscn" id="4_ap7h7"]
+[ext_resource type="Texture2D" uid="uid://bymj3ed2mxchl" path="res://characters/bob/ruka_szadi.png" id="6_68kfn"]
+[ext_resource type="Texture2D" uid="uid://d36bvr55k2bl3" path="res://characters/bob/pritsel.png" id="7_4hgur"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_68kfn"]
+radius = 200.0
+height = 600.0
+
+[sub_resource type="Gradient" id="Gradient_qwqkp"]
+colors = PackedColorArray(0, 0.443137, 1, 0, 0.43137255, 0.6117647, 1, 1)
+
+[node name="bob" type="CharacterBody2D"]
+editor_description = "сися"
+position = Vector2(1, 0)
+slide_on_ceiling = false
+floor_constant_speed = true
+floor_max_angle = 1.39626
+floor_snap_length = 20.0
+script = ExtResource("1_kdw4r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 12)
+shape = SubResource("CapsuleShape2D_68kfn")
+
+[node name="bob" type="Sprite2D" parent="."]
+z_index = 2
+
+[node name="body" type="Sprite2D" parent="bob"]
+texture_filter = 2
+position = Vector2(0, -4)
+texture = ExtResource("1_so25c")
+
+[node name="propeller" type="Sprite2D" parent="bob"]
+texture_filter = 2
+position = Vector2(30, -361)
+texture = ExtResource("2_6mqu1")
+
+[node name="weapon_pivot" type="Node2D" parent="bob"]
+position = Vector2(100, 0)
+
+[node name="hand" type="Sprite2D" parent="bob/weapon_pivot"]
+z_index = 4
+position = Vector2(61, 116)
+texture = ExtResource("2_wc82f")
+
+[node name="weapon" type="Sprite2D" parent="bob/weapon_pivot"]
+z_index = 3
+position = Vector2(-650, -47)
+scale = Vector2(0.326671, 0.326671)
+texture = ExtResource("3_yusf5")
+centered = false
+
+[node name="hand_bwd" type="Sprite2D" parent="bob/weapon_pivot"]
+z_index = -1
+position = Vector2(-397, 93)
+texture = ExtResource("6_68kfn")
+
+[node name="pritsel" type="Sprite2D" parent="bob/weapon_pivot"]
+position = Vector2(-1282, 27)
+texture = ExtResource("7_4hgur")
+
+[node name="muzzle" type="Marker2D" parent="bob/weapon_pivot"]
+position = Vector2(-584, 28)
+
+[node name="character_trail" parent="." instance=ExtResource("4_ap7h7")]
+visible = false
+default_color = Color(0.431373, 0.611765, 1, 1)
+gradient = SubResource("Gradient_qwqkp")
+
+[node name="health" type="Label" parent="."]
+offset_left = -394.0
+offset_top = -895.0
+offset_right = 398.0
+offset_bottom = -581.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 300
+text = "500"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="nickname" type="Label" parent="."]
+offset_left = -395.0
+offset_top = -1209.0
+offset_right = 397.0
+offset_bottom = -895.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 300
+text = "Боб"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

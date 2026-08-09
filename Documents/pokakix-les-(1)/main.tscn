@@ -1,0 +1,1449 @@
+[gd_scene load_steps=17 format=3 uid="uid://ca8qymm6vmgpp"]
+
+[ext_resource type="Script" uid="uid://80yrlruq4nvp" path="res://main.gd" id="1_i5q3g"]
+[ext_resource type="PackedScene" uid="uid://bnmspyp7p8b1t" path="res://characters/bob/bob.tscn" id="3_236fb"]
+[ext_resource type="Script" uid="uid://bm0p80djemyan" path="res://characters/bob/bob_amazing.gd" id="3_efxa6"]
+[ext_resource type="Script" uid="uid://yviub0yoaru0" path="res://movement.gd" id="3_kek77"]
+[ext_resource type="PackedScene" uid="uid://dnhnvtxkve8d7" path="res://maps/asteroid/asteroid.tscn" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://2oi4opi24g4j" path="res://Camera2D.gd" id="4_34024"]
+[ext_resource type="Script" uid="uid://d0pjjdlls281m" path="res://jumper.gd" id="4_dg77c"]
+[ext_resource type="Texture2D" uid="uid://bmdreye6cy6sq" path="res://maps/circle4.png" id="5_lquwl"]
+[ext_resource type="Shader" uid="uid://ned5awrgleoc" path="res://maps/asteroid/asteroid.gdshader" id="6_7mycd"]
+[ext_resource type="Script" uid="uid://ca2bnbdhb20p1" path="res://static_body_2d.gd" id="6_272bh"]
+[ext_resource type="Script" uid="uid://bxjo7ofdxuxrk" path="res://area_2d.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://p8avwtowi1op" path="res://pritselix_new_2099.gd" id="7_vivmo"]
+[ext_resource type="Script" uid="uid://diyrsmbvxcq3s" path="res://visual_component.gd" id="7_ycdy4"]
+[ext_resource type="Script" uid="uid://bv6xx85gojvmp" path="res://debug.gd" id="8_w48qg"]
+[ext_resource type="Script" uid="uid://cnqc0y3jevjvn" path="res://polygons_generation.gd" id="12_vivmo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
+shader = ExtResource("6_7mycd")
+
+[node name="Node" type="Node"]
+script = ExtResource("1_i5q3g")
+
+[node name="bob" parent="." instance=ExtResource("3_236fb")]
+position = Vector2(975, 331)
+scale = Vector2(0.03, 0.03)
+script = ExtResource("3_efxa6")
+
+[node name="character_trail" parent="bob" index="2"]
+visible = true
+width = 10.0
+texture_mode = 2
+sharp_limit = 90.0
+round_precision = 32
+targetPath = NodePath("..")
+
+[node name="jumper" type="Node2D" parent="bob" node_paths=PackedStringArray("movement_node")]
+position = Vector2(-32499.996, -11033.332)
+scale = Vector2(33.33333, 33.33333)
+script = ExtResource("4_dg77c")
+movement_node = NodePath("../movement")
+
+[node name="jump_delay_timer" type="Timer" parent="bob/jumper"]
+wait_time = 0.3
+one_shot = true
+autostart = true
+
+[node name="bwd_jump_fix_timer" type="Timer" parent="bob/jumper"]
+wait_time = 0.1
+one_shot = true
+autostart = true
+
+[node name="movement" type="Node2D" parent="bob"]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("3_kek77")
+
+[node name="pritselix" type="Node2D" parent="bob"]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("7_vivmo")
+
+[node name="visual_vertoleta" type="Node2D" parent="bob" node_paths=PackedStringArray("pritselix_node")]
+script = ExtResource("7_ycdy4")
+pritselix_node = NodePath("../pritselix")
+
+[node name="rotation_timer" type="Timer" parent="bob/visual_vertoleta"]
+wait_time = 0.292
+one_shot = true
+
+[node name="debug" type="Node2D" parent="bob"]
+script = ExtResource("8_w48qg")
+
+[node name="debug_text" type="Label" parent="bob/debug"]
+offset_left = 1197.0
+offset_top = -980.0
+offset_right = 2252.0
+offset_bottom = -657.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+theme_override_font_sizes/font_size = 164
+text = "0,0"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 326)
+limit_left = 0
+limit_top = 0
+limit_right = 1920
+limit_bottom = 1080
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+editor_draw_limits = true
+script = ExtResource("4_34024")
+
+[node name="asteroid" parent="." node_paths=PackedStringArray("map_sprite", "static_body") instance=ExtResource("4_1bvp3")]
+position = Vector2(1005, 515)
+scale = Vector2(0.252, 0.252)
+map_sprite = NodePath("asteroid")
+static_body = NodePath("StaticBody2D")
+CIRCLE_TEX = ExtResource("5_lquwl")
+
+[node name="Sprite2D" parent="asteroid/ParallaxBackground/ParallaxLayer" index="0"]
+position = Vector2(-56, -98.99999)
+scale = Vector2(0.37627065, 0.38121247)
+
+[node name="StaticBody2D" parent="asteroid" index="1"]
+position = Vector2(0, 0)
+scale = Vector2(1, 1)
+script = ExtResource("6_272bh")
+
+[node name="Area2D" parent="asteroid/StaticBody2D" index="0"]
+script = ExtResource("7_5vw27")
+
+[node name="@CollisionPolygon2D@34457" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="1"]
+polygon = PackedVector2Array(-1125, -665, -1137, -703, -1136, -703)
+
+[node name="@CollisionPolygon2D@34458" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="2"]
+polygon = PackedVector2Array(-335, -1084, -335, -1085, -275, -1070, -275, -1069)
+
+[node name="@CollisionPolygon2D@34459" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="3"]
+polygon = PackedVector2Array(-956, -924, -960, -945, -959, -945)
+
+[node name="@CollisionPolygon2D@34460" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="4"]
+polygon = PackedVector2Array(-521, -1053, -494, -1058, -494, -1057)
+
+[node name="@CollisionPolygon2D@34461" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="5"]
+polygon = PackedVector2Array(-262, -852, -258, -830, -259, -830)
+
+[node name="@CollisionPolygon2D@34462" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="6"]
+polygon = PackedVector2Array(-178, -978, -176, -961, -177, -961, -369, -1043)
+
+[node name="@CollisionPolygon2D@34463" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="7"]
+polygon = PackedVector2Array(-991, -507, -1019, -504, -1019, -505)
+
+[node name="@CollisionPolygon2D@34464" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="8"]
+polygon = PackedVector2Array(-1037, -938, -1006, -938, -1006, -937)
+
+[node name="@CollisionPolygon2D@34465" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="9"]
+polygon = PackedVector2Array(-599, -506, -605, -449, -614, -434, -634, -422, -656, -416, -672, -416, -770, -418, -770, -419, -668, -953, -599, -513)
+
+[node name="@CollisionPolygon2D@34466" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="10"]
+polygon = PackedVector2Array(-425, -683, -428, -619, -429, -619)
+
+[node name="@CollisionPolygon2D@34467" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="11"]
+polygon = PackedVector2Array(-599, -506, -604, -449, -605, -449)
+
+[node name="@CollisionPolygon2D@34468" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="12"]
+polygon = PackedVector2Array(-851, -536, -893, -544, -893, -545)
+
+[node name="@CollisionPolygon2D@34469" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="13"]
+polygon = PackedVector2Array(-259, -830, -266, -800, -267, -800, -262, -852)
+
+[node name="@CollisionPolygon2D@34470" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="14"]
+polygon = PackedVector2Array(-1019, -505, -1040, -510, -1040, -511)
+
+[node name="@CollisionPolygon2D@34471" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="15"]
+polygon = PackedVector2Array(-770, -419, -800, -427, -800, -428, -668, -953)
+
+[node name="@CollisionPolygon2D@34472" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="16"]
+polygon = PackedVector2Array(-369, -1045, -361, -1071, -360, -1071)
+
+[node name="@CollisionPolygon2D@34473" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="17"]
+polygon = PackedVector2Array(-1136, -703, -1126, -731, -1125, -731, -1125, -665)
+
+[node name="@CollisionPolygon2D@34474" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="18"]
+polygon = PackedVector2Array(-429, -619, -441, -586, -442, -586)
+
+[node name="@CollisionPolygon2D@34475" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="19"]
+polygon = PackedVector2Array(-189, -946, -222, -935, -400, -1030, -400, -1031, -369, -1043, -177, -961)
+
+[node name="@CollisionPolygon2D@34476" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="20"]
+polygon = PackedVector2Array(-742, -1050, -730, -1045, -730, -1044)
+
+[node name="@CollisionPolygon2D@34477" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="21"]
+polygon = PackedVector2Array(-542, -558, -542, -557, -582, -538, -668, -953)
+
+[node name="@CollisionPolygon2D@34478" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="22"]
+polygon = PackedVector2Array(-1110, -883, -1110, -895, -1104, -907, -1103, -907, -1069, -836, -1070, -836)
+
+[node name="@CollisionPolygon2D@34479" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="23"]
+polygon = PackedVector2Array(-605, -449, -613, -434, -614, -434)
+
+[node name="@CollisionPolygon2D@34480" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="24"]
+polygon = PackedVector2Array(-959, -945, -952, -958, -950, -958, -956, -924)
+
+[node name="@CollisionPolygon2D@34481" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="25"]
+polygon = PackedVector2Array(-800, -428, -825, -442, -825, -443, -668, -953)
+
+[node name="@CollisionPolygon2D@34482" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="26"]
+polygon = PackedVector2Array(-335, -1084, -275, -1069, -219, -1037, -219, -1036, -369, -1043, -369, -1045, -360, -1071)
+
+[node name="@CollisionPolygon2D@34483" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="27"]
+polygon = PackedVector2Array(-267, -800, -293, -755, -294, -755, -277, -886, -262, -855, -262, -852)
+
+[node name="@CollisionPolygon2D@34484" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="28"]
+polygon = PackedVector2Array(-177, -961, -187, -946, -189, -946)
+
+[node name="@CollisionPolygon2D@34485" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="29"]
+polygon = PackedVector2Array(-668, -953, -668, -954, -579, -1021, -577, -1021, -415, -720, -415, -719, -425, -694, -542, -558)
+
+[node name="@CollisionPolygon2D@34486" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="30"]
+polygon = PackedVector2Array(-1006, -937, -988, -923, -988, -920, -1037, -938)
+
+[node name="@CollisionPolygon2D@34487" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="31"]
+polygon = PackedVector2Array(-222, -934, -247, -905, -249, -905, -400, -1030, -222, -935)
+
+[node name="@CollisionPolygon2D@34488" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="32"]
+polygon = PackedVector2Array(-974, -882, -966, -877, -1075, -607, -1076, -607, -1125, -663, -1125, -665, -1070, -786, -975, -882)
+
+[node name="@CollisionPolygon2D@34489" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="33"]
+polygon = PackedVector2Array(-960, -884, -960, -893, -956, -917, -726, -994, -725, -994, -694, -963, -850, -536)
+
+[node name="@CollisionPolygon2D@34490" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="34"]
+polygon = PackedVector2Array(-966, -877, -966, -878, -960, -884, -850, -536, -851, -536, -893, -545, -919, -557)
+
+[node name="@CollisionPolygon2D@34491" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="35"]
+polygon = PackedVector2Array(-219, -1036, -194, -1010, -194, -1008, -369, -1043)
+
+[node name="@CollisionPolygon2D@34492" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="36"]
+polygon = PackedVector2Array(-369, -1043, -194, -1008, -178, -981, -178, -978)
+
+[node name="@CollisionPolygon2D@34493" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="37"]
+polygon = PackedVector2Array(-400, -1030, -249, -905, -277, -892, -424, -1030)
+
+[node name="@CollisionPolygon2D@34494" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="38"]
+polygon = PackedVector2Array(-521, -1053, -494, -1057, -424, -1030, -277, -892, -277, -886, -294, -755, -337, -729, -415, -720, -577, -1021)
+
+[node name="@CollisionPolygon2D@34495" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="39"]
+polygon = PackedVector2Array(-726, -994, -956, -917, -956, -924, -950, -958, -881, -1003, -879, -1003, -729, -1000)
+
+[node name="@CollisionPolygon2D@34496" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="40"]
+polygon = PackedVector2Array(-991, -507, -1019, -505, -1040, -511, -1058, -531, -1058, -534, -924, -557)
+
+[node name="@CollisionPolygon2D@34497" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="41"]
+polygon = PackedVector2Array(-1075, -928, -1037, -938, -988, -920, -975, -882, -1069, -836)
+
+[node name="@CollisionPolygon2D@34498" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="42"]
+polygon = PackedVector2Array(-1069, -836, -1103, -907, -1078, -928, -1075, -928)
+
+[node name="@CollisionPolygon2D@34499" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="43"]
+polygon = PackedVector2Array(-1070, -792, -1069, -836, -975, -882, -1070, -786)
+
+[node name="@CollisionPolygon2D@34500" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="44"]
+polygon = PackedVector2Array(-825, -443, -842, -464, -842, -467, -668, -953)
+
+[node name="@CollisionPolygon2D@34501" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="45"]
+polygon = PackedVector2Array(-924, -557, -988, -507, -991, -507)
+
+[node name="@CollisionPolygon2D@34502" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="46"]
+polygon = PackedVector2Array(-1125, -665, -1125, -731, -1070, -786)
+
+[node name="@CollisionPolygon2D@34503" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="47"]
+polygon = PackedVector2Array(-442, -586, -464, -570, -467, -570, -429, -619)
+
+[node name="@CollisionPolygon2D@34504" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="48"]
+polygon = PackedVector2Array(-924, -557, -1058, -534, -1075, -607, -966, -877)
+
+[node name="@CollisionPolygon2D@34505" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="49"]
+polygon = PackedVector2Array(-919, -557, -924, -557, -966, -877)
+
+[node name="@CollisionPolygon2D@34506" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="50"]
+polygon = PackedVector2Array(-425, -683, -429, -619, -467, -570, -542, -558, -425, -694)
+
+[node name="@CollisionPolygon2D@34507" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="51"]
+polygon = PackedVector2Array(-582, -538, -582, -537, -599, -513, -668, -953)
+
+[node name="@CollisionPolygon2D@34508" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="52"]
+polygon = PackedVector2Array(-614, -434, -631, -422, -634, -422)
+
+[node name="@CollisionPolygon2D@34509" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="53"]
+polygon = PackedVector2Array(-294, -755, -333, -729, -337, -729)
+
+[node name="@CollisionPolygon2D@34510" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="54"]
+polygon = PackedVector2Array(-759, -1050, -742, -1050, -730, -1044, -723, -1033, -723, -1024, -729, -1009, -782, -1044)
+
+[node name="@CollisionPolygon2D@34511" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="55"]
+polygon = PackedVector2Array(-786, -1044, -782, -1044, -729, -1009, -729, -1000, -879, -1003)
+
+[node name="@CollisionPolygon2D@34512" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="56"]
+polygon = PackedVector2Array(-850, -536, -694, -963, -692, -963, -668, -953, -842, -467)
+
+[node name="@CollisionPolygon2D@34513" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="57"]
+polygon = PackedVector2Array(-577, -1021, -524, -1053, -521, -1053)
+
+[node name="@CollisionPolygon2D@34514" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="58"]
+polygon = PackedVector2Array(1207, -823, 1193, -834, 1188, -851, 1189, -851, 1211, -823)
+
+[node name="@CollisionPolygon2D@34515" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="59"]
+polygon = PackedVector2Array(1615, -998, 1615, -999, 1636, -997, 1636, -996)
+
+[node name="@CollisionPolygon2D@34516" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="60"]
+polygon = PackedVector2Array(1760, -554, 1763, -516, 1762, -516)
+
+[node name="@CollisionPolygon2D@34517" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="61"]
+polygon = PackedVector2Array(1203, -645, 1201, -681, 1202, -681)
+
+[node name="@CollisionPolygon2D@34518" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="62"]
+polygon = PackedVector2Array(1692, -937, 1693, -912, 1692, -912)
+
+[node name="@CollisionPolygon2D@34519" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="63"]
+polygon = PackedVector2Array(1310, -968, 1338, -969, 1338, -968, 1211, -823)
+
+[node name="@CollisionPolygon2D@34520" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="64"]
+polygon = PackedVector2Array(1762, -516, 1758, -474, 1757, -474, 1411, -490, 1760, -554)
+
+[node name="@CollisionPolygon2D@34521" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="65"]
+polygon = PackedVector2Array(1552, -304, 1510, -308, 1510, -309)
+
+[node name="@CollisionPolygon2D@34522" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="66"]
+polygon = PackedVector2Array(1347, -524, 1341, -524, 1287, -530, 1287, -531, 1677, -888, 1667, -791)
+
+[node name="@CollisionPolygon2D@34523" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="67"]
+polygon = PackedVector2Array(1644, -346, 1641, -325, 1640, -325)
+
+[node name="@CollisionPolygon2D@34524" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="68"]
+polygon = PackedVector2Array(1352, -957, 1356, -942, 1223, -758, 1222, -758, 1211, -823, 1338, -968)
+
+[node name="@CollisionPolygon2D@34525" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="69"]
+polygon = PackedVector2Array(1189, -851, 1195, -875, 1196, -875, 1211, -823)
+
+[node name="@CollisionPolygon2D@34526" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="70"]
+polygon = PackedVector2Array(1677, -888, 1394, -938, 1394, -939, 1469, -963, 1474, -963)
+
+[node name="@CollisionPolygon2D@34527" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="71"]
+polygon = PackedVector2Array(1677, -888, 1542, -969, 1542, -970, 1615, -998, 1677, -897)
+
+[node name="@CollisionPolygon2D@34528" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="72"]
+polygon = PackedVector2Array(1684, -398, 1439, -383, 1438, -383, 1415, -442, 1415, -446)
+
+[node name="@CollisionPolygon2D@34529" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="73"]
+polygon = PackedVector2Array(1510, -309, 1449, -334, 1449, -335)
+
+[node name="@CollisionPolygon2D@34530" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="74"]
+polygon = PackedVector2Array(1667, -791, 1668, -791, 1749, -599, 1749, -596, 1411, -490, 1409, -490, 1347, -524)
+
+[node name="@CollisionPolygon2D@34531" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="75"]
+polygon = PackedVector2Array(1757, -474, 1742, -439, 1741, -439, 1411, -490)
+
+[node name="@CollisionPolygon2D@34532" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="76"]
+polygon = PackedVector2Array(1636, -996, 1664, -983, 1664, -982)
+
+[node name="@CollisionPolygon2D@34533" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="77"]
+polygon = PackedVector2Array(1287, -531, 1256, -549, 1256, -550, 1677, -888)
+
+[node name="@CollisionPolygon2D@34534" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="78"]
+polygon = PackedVector2Array(1207, -823, 1193, -832, 1193, -834)
+
+[node name="@CollisionPolygon2D@34535" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="79"]
+polygon = PackedVector2Array(1338, -968, 1352, -959, 1352, -957)
+
+[node name="@CollisionPolygon2D@34536" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="80"]
+polygon = PackedVector2Array(1196, -875, 1224, -908, 1226, -908, 1211, -823)
+
+[node name="@CollisionPolygon2D@34537" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="81"]
+polygon = PackedVector2Array(1644, -346, 1640, -325, 1612, -309, 1609, -309, 1644, -350)
+
+[node name="@CollisionPolygon2D@34538" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="82"]
+polygon = PackedVector2Array(1741, -439, 1722, -419, 1720, -419, 1411, -490)
+
+[node name="@CollisionPolygon2D@34539" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="83"]
+polygon = PackedVector2Array(1256, -550, 1235, -570, 1235, -572, 1677, -888)
+
+[node name="@CollisionPolygon2D@34540" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="84"]
+polygon = PackedVector2Array(1692, -937, 1692, -912, 1677, -897, 1615, -998, 1636, -996, 1664, -982)
+
+[node name="@CollisionPolygon2D@34541" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="85"]
+polygon = PackedVector2Array(1432, -366, 1439, -383, 1684, -398, 1684, -396, 1644, -350, 1589, -304, 1552, -304, 1510, -309, 1449, -335, 1432, -356)
+
+[node name="@CollisionPolygon2D@34542" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="86"]
+polygon = PackedVector2Array(1211, -823, 1226, -908, 1307, -968, 1310, -968)
+
+[node name="@CollisionPolygon2D@34543" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="87"]
+polygon = PackedVector2Array(1219, -725, 1219, -729, 1223, -758, 1356, -942, 1359, -942, 1394, -938, 1677, -888)
+
+[node name="@CollisionPolygon2D@34544" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="88"]
+polygon = PackedVector2Array(1644, -350, 1609, -309, 1589, -304)
+
+[node name="@CollisionPolygon2D@34545" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="89"]
+polygon = PackedVector2Array(1684, -398, 1415, -446, 1411, -490, 1720, -419)
+
+[node name="@CollisionPolygon2D@34546" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="90"]
+polygon = PackedVector2Array(1760, -560, 1760, -554, 1411, -490, 1749, -596)
+
+[node name="@CollisionPolygon2D@34547" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="91"]
+polygon = PackedVector2Array(1677, -888, 1235, -572, 1213, -607, 1213, -610)
+
+[node name="@CollisionPolygon2D@34548" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="92"]
+polygon = PackedVector2Array(1677, -888, 1213, -610, 1203, -639, 1203, -645)
+
+[node name="@CollisionPolygon2D@34549" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="93"]
+polygon = PackedVector2Array(1677, -888, 1203, -645, 1202, -681, 1219, -725)
+
+[node name="@CollisionPolygon2D@34550" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="94"]
+polygon = PackedVector2Array(1677, -888, 1474, -963, 1542, -969)
+
+[node name="@CollisionPolygon2D@34551" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="95"]
+polygon = PackedVector2Array(1692, -937, 1664, -982, 1692, -941)
+
+[node name="@CollisionPolygon2D@34552" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="96"]
+polygon = PackedVector2Array(1047, 347, 1037, 326, 1038, 326)
+
+[node name="@CollisionPolygon2D@34553" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="97"]
+polygon = PackedVector2Array(987, -577, 1003, -584, 1003, -583)
+
+[node name="@CollisionPolygon2D@34554" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="98"]
+polygon = PackedVector2Array(53, 698, 38, 702, 38, 701)
+
+[node name="@CollisionPolygon2D@34555" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="99"]
+polygon = PackedVector2Array(-118, -688, -118, -689, -90, -682, -90, -681, -93, -623)
+
+[node name="@CollisionPolygon2D@34556" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="100"]
+polygon = PackedVector2Array(987, -577, 1003, -583, 1011, -526)
+
+[node name="@CollisionPolygon2D@34557" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="101"]
+polygon = PackedVector2Array(989, 465, 997, 514, 996, 514)
+
+[node name="@CollisionPolygon2D@34558" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="102"]
+polygon = PackedVector2Array(1198, 404, 1202, 431, 1201, 431)
+
+[node name="@CollisionPolygon2D@34559" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="103"]
+polygon = PackedVector2Array(-254, 1189, -311, 1197, -311, 1196, -253, 1017)
+
+[node name="@CollisionPolygon2D@34560" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="104"]
+polygon = PackedVector2Array(338, 944, 363, 941, 363, 942, 323, 1055)
+
+[node name="@CollisionPolygon2D@34561" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="105"]
+polygon = PackedVector2Array(-1447, 461, -1472, 464, -1472, 463, -1337, -1, -1407, 439)
+
+[node name="@CollisionPolygon2D@34562" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="106"]
+polygon = PackedVector2Array(1590, 340, 1592, 358, 1591, 358)
+
+[node name="@CollisionPolygon2D@34563" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="107"]
+polygon = PackedVector2Array(918, 384, 947, 381, 947, 382)
+
+[node name="@CollisionPolygon2D@34564" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="108"]
+polygon = PackedVector2Array(591, 1022, 593, 1042, 592, 1042, 535, 986, 573, 997)
+
+[node name="@CollisionPolygon2D@34565" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="109"]
+polygon = PackedVector2Array(565, 1077, 535, 1080, 535, 1079)
+
+[node name="@CollisionPolygon2D@34566" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="110"]
+polygon = PackedVector2Array(-482, 1075, -484, 1054, -483, 1054, -350, 1181, -471, 1099)
+
+[node name="@CollisionPolygon2D@34567" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="111"]
+polygon = PackedVector2Array(-1192, -3, -1160, -6, -1160, -5)
+
+[node name="@CollisionPolygon2D@34568" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="112"]
+polygon = PackedVector2Array(1208, 356, 1205, 322, 1206, 322)
+
+[node name="@CollisionPolygon2D@34569" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="113"]
+polygon = PackedVector2Array(-386, 1195, -423, 1198, -423, 1197)
+
+[node name="@CollisionPolygon2D@34570" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="114"]
+polygon = PackedVector2Array(1047, 347, 1054, 312, 1079, 310, 1079, 311, 1078, 347, 1047, 348)
+
+[node name="@CollisionPolygon2D@34571" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="115"]
+polygon = PackedVector2Array(520, 942, 519, 928, 520, 928)
+
+[node name="@CollisionPolygon2D@34572" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="116"]
+polygon = PackedVector2Array(3, 1138, -29, 1140, -29, 1139, 58, 795)
+
+[node name="@CollisionPolygon2D@34573" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="117"]
+polygon = PackedVector2Array(-1735, 248, -1737, 215, -1736, 215)
+
+[node name="@CollisionPolygon2D@34574" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="118"]
+polygon = PackedVector2Array(-1337, -1, -1299, -3, -1299, -2)
+
+[node name="@CollisionPolygon2D@34575" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="119"]
+polygon = PackedVector2Array(-832, 104, -836, 23, -835, 23, -537, 449)
+
+[node name="@CollisionPolygon2D@34576" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="120"]
+polygon = PackedVector2Array(1288, 453, 1241, 455, 1241, 454)
+
+[node name="@CollisionPolygon2D@34577" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="121"]
+polygon = PackedVector2Array(477, -435, 633, -439, 633, -438)
+
+[node name="@CollisionPolygon2D@34578" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="122"]
+polygon = PackedVector2Array(-68, -362, -241, 496, -322, 498, -322, 497, -288, -382)
+
+[node name="@CollisionPolygon2D@34579" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="123"]
+polygon = PackedVector2Array(-392, 973, -340, 972, -340, 973, -350, 1181)
+
+[node name="@CollisionPolygon2D@34580" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="124"]
+polygon = PackedVector2Array(-1655, 126, -1656, 64, -1655, 64)
+
+[node name="@CollisionPolygon2D@34581" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="125"]
+polygon = PackedVector2Array(998, 95, 1005, 111, 1005, 137, 1004, 137, 205, -367, 399, -422, 403, -422)
+
+[node name="@CollisionPolygon2D@34582" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="126"]
+polygon = PackedVector2Array(1096, 320, 1096, 339, 1094, 339, 1079, 311)
+
+[node name="@CollisionPolygon2D@34583" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="127"]
+polygon = PackedVector2Array(705, 706, 705, 731, 704, 731)
+
+[node name="@CollisionPolygon2D@34584" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="128"]
+polygon = PackedVector2Array(-36, 769, -9, 769, -9, 770, -60, 793, -60, 792)
+
+[node name="@CollisionPolygon2D@34585" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="129"]
+polygon = PackedVector2Array(999, 420, 1000, 382, 1001, 382)
+
+[node name="@CollisionPolygon2D@34586" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="130"]
+polygon = PackedVector2Array(445, 952, 450, 952, 478, 953, 478, 954, 459, 1094, 449, 1094, 379, 1087, 379, 1086, 406, 968)
+
+[node name="@CollisionPolygon2D@34587" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="131"]
+polygon = PackedVector2Array(1201, 431, 1193, 543, 1192, 543, 1062, 525, 1062, 522)
+
+[node name="@CollisionPolygon2D@34588" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="132"]
+polygon = PackedVector2Array(-1714, 294, -1655, 128, -1543, 32, -1477, -9, -1417, -29, -1408, -29, -1386, -27, -1386, -26, -1594, 375, -1596, 375, -1670, 334, -1714, 296)
+
+[node name="@CollisionPolygon2D@34589" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="133"]
+polygon = PackedVector2Array(-288, -383, -193, -573, -93, -595, -92, -595, -68, -362, -288, -382)
+
+[node name="@CollisionPolygon2D@34590" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="134"]
+polygon = PackedVector2Array(633, -438, 741, -426, 741, -425)
+
+[node name="@CollisionPolygon2D@34591" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="135"]
+polygon = PackedVector2Array(-322, 497, -453, 480, -453, 479, -288, -382)
+
+[node name="@CollisionPolygon2D@34592" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="136"]
+polygon = PackedVector2Array(1023, 357, 1047, 348, 1078, 347, 1085, 347, 1137, 354, 1137, 355, 999, 421, 999, 420, 1001, 382)
+
+[node name="@CollisionPolygon2D@34593" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="137"]
+polygon = PackedVector2Array(-959, 82, -963, 111, -964, 111)
+
+[node name="@CollisionPolygon2D@34594" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="138"]
+polygon = PackedVector2Array(-1042, 17, -1008, 22, -1008, 23)
+
+[node name="@CollisionPolygon2D@34595" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="139"]
+polygon = PackedVector2Array(-311, 1196, -330, 1193, -330, 1192, -253, 1017)
+
+[node name="@CollisionPolygon2D@34596" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="140"]
+polygon = PackedVector2Array(-835, 23, -825, -39, -824, -39, -537, 449)
+
+[node name="@CollisionPolygon2D@34597" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="141"]
+polygon = PackedVector2Array(1137, 590, 1107, 585, 1107, 584, 1192, 543, 1184, 573, 1166, 590)
+
+[node name="@CollisionPolygon2D@34598" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="142"]
+polygon = PackedVector2Array(11, 529, 11, 516, 16, 487, 17, 487, 135, 556, 135, 558, 97, 607)
+
+[node name="@CollisionPolygon2D@34599" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="143"]
+polygon = PackedVector2Array(-249, 967, -249, 939, -245, 919, -244, 919, -118, 1092, -237, 1000)
+
+[node name="@CollisionPolygon2D@34600" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="144"]
+polygon = PackedVector2Array(-29, 1139, -71, 1130, -71, 1129, 58, 795)
+
+[node name="@CollisionPolygon2D@34601" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="145"]
+polygon = PackedVector2Array(-1072, 560, -1143, 560, -1208, 545, -1208, 544, -969, 154, -958, 543)
+
+[node name="@CollisionPolygon2D@34602" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="146"]
+polygon = PackedVector2Array(1192, 543, 1185, 573, 1184, 573)
+
+[node name="@CollisionPolygon2D@34603" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="147"]
+polygon = PackedVector2Array(986, 424, 1023, 449, 1023, 450, 989, 458, 984, 424)
+
+[node name="@CollisionPolygon2D@34604" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="148"]
+polygon = PackedVector2Array(1198, 403, 1175, 370, 1175, 369, 1208, 361, 1217, 395)
+
+[node name="@CollisionPolygon2D@34605" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="149"]
+polygon = PackedVector2Array(-1160, -5, -1132, 2, -1132, 3)
+
+[node name="@CollisionPolygon2D@34606" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="150"]
+polygon = PackedVector2Array(323, 1055, 319, 1055, 287, 1047, 287, 1046, 315, 954, 334, 944, 338, 944)
+
+[node name="@CollisionPolygon2D@34607" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="151"]
+polygon = PackedVector2Array(535, 986, 573, 996, 573, 997)
+
+[node name="@CollisionPolygon2D@34608" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="152"]
+polygon = PackedVector2Array(-1472, 463, -1560, 439, -1560, 438, -1337, -1)
+
+[node name="@CollisionPolygon2D@34609" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="153"]
+polygon = PackedVector2Array(-537, 449, -537, 450, -627, 475, -632, 475, -832, 105, -832, 104)
+
+[node name="@CollisionPolygon2D@34610" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="154"]
+polygon = PackedVector2Array(1591, 358, 1587, 372, 1586, 372, 1590, 340)
+
+[node name="@CollisionPolygon2D@34611" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="155"]
+polygon = PackedVector2Array(359, 842, 339, 912, 338, 912, 91, 764, 359, 838)
+
+[node name="@CollisionPolygon2D@34612" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="156"]
+polygon = PackedVector2Array(-423, 1197, -465, 1185, -465, 1184)
+
+[node name="@CollisionPolygon2D@34613" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="157"]
+polygon = PackedVector2Array(-482, 1167, -491, 1148, -491, 1134, -486, 1117, -485, 1117, -423, 1197, -465, 1184)
+
+[node name="@CollisionPolygon2D@34614" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="158"]
+polygon = PackedVector2Array(996, 514, 993, 524, 992, 524)
+
+[node name="@CollisionPolygon2D@34615" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="159"]
+polygon = PackedVector2Array(-174, 1130, -180, 1150, -181, 1150, -253, 1017, -174, 1126)
+
+[node name="@CollisionPolygon2D@34616" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="160"]
+polygon = PackedVector2Array(-340, 973, -286, 990, -286, 991, -350, 1181)
+
+[node name="@CollisionPolygon2D@34617" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="161"]
+polygon = PackedVector2Array(265, 1026, 265, 1027, 246, 1033)
+
+[node name="@CollisionPolygon2D@34618" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="162"]
+polygon = PackedVector2Array(379, 1086, 352, 1077, 352, 1076, 404, 968, 406, 968)
+
+[node name="@CollisionPolygon2D@34619" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="163"]
+polygon = PackedVector2Array(-824, -39, -782, -164, -781, -164, -537, 449)
+
+[node name="@CollisionPolygon2D@34620" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="164"]
+polygon = PackedVector2Array(1219, 395, 1208, 361, 1321, 282, 1517, 245, 1530, 245, 1550, 252, 1550, 253, 1519, 410, 1298, 453, 1288, 453)
+
+[node name="@CollisionPolygon2D@34621" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="165"]
+polygon = PackedVector2Array(246, 1034, 237, 1059, 236, 1059)
+
+[node name="@CollisionPolygon2D@34622" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="166"]
+polygon = PackedVector2Array(-483, 1054, -472, 1024, -471, 1024, -350, 1181)
+
+[node name="@CollisionPolygon2D@34623" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="167"]
+polygon = PackedVector2Array(222, 412, 536, 740, 536, 741, 479, 762, 474, 762)
+
+[node name="@CollisionPolygon2D@34624" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="168"]
+polygon = PackedVector2Array(363, 942, 392, 953, 392, 954, 323, 1055)
+
+[node name="@CollisionPolygon2D@34625" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="169"]
+polygon = PackedVector2Array(592, 1042, 584, 1063, 583, 1063, 535, 986)
+
+[node name="@CollisionPolygon2D@34626" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="170"]
+polygon = PackedVector2Array(-174, -640, -174, -654, -170, -664, -169, -664, -93, -623, -161, -624)
+
+[node name="@CollisionPolygon2D@34627" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="171"]
+polygon = PackedVector2Array(1079, 311, 1094, 339, 1078, 347)
+
+[node name="@CollisionPolygon2D@34628" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="172"]
+polygon = PackedVector2Array(478, 954, 510, 967, 510, 968, 506, 1068, 459, 1094)
+
+[node name="@CollisionPolygon2D@34629" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="173"]
+polygon = PackedVector2Array(53, 698, 38, 701, 30, 689, 30, 685, 97, 609)
+
+[node name="@CollisionPolygon2D@34630" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="174"]
+polygon = PackedVector2Array(359, 838, 91, 764, 91, 762, 131, 665, 132, 665, 371, 814, 371, 816)
+
+[node name="@CollisionPolygon2D@34631" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="175"]
+polygon = PackedVector2Array(-350, 1181, -350, 1182, -381, 1195, -386, 1195, -471, 1101, -471, 1099)
+
+[node name="@CollisionPolygon2D@34632" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="176"]
+polygon = PackedVector2Array(-244, 919, -232, 891, -231, 891, -118, 1092)
+
+[node name="@CollisionPolygon2D@34633" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="177"]
+polygon = PackedVector2Array(947, 382, 972, 393, 972, 395)
+
+[node name="@CollisionPolygon2D@34634" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="178"]
+polygon = PackedVector2Array(1047, 347, 1038, 326, 1051, 312, 1054, 312)
+
+[node name="@CollisionPolygon2D@34635" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="179"]
+polygon = PackedVector2Array(542, 746, 536, 740, 222, 412, 222, 410, 278, 284, 279, 284, 675, 606, 675, 608, 654, 635, 543, 746)
+
+[node name="@CollisionPolygon2D@34636" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="180"]
+polygon = PackedVector2Array(-1736, 215, -1716, 172, -1715, 172, -1735, 248)
+
+[node name="@CollisionPolygon2D@34637" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="181"]
+polygon = PackedVector2Array(791, -410, 985, -577, 987, -577, 1011, -526, 1011, -469, 998, 68, 791, -409)
+
+[node name="@CollisionPolygon2D@34638" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="182"]
+polygon = PackedVector2Array(97, 609, 54, 698, 53, 698)
+
+[node name="@CollisionPolygon2D@34639" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="183"]
+polygon = PackedVector2Array(97, 609, 30, 685, 21, 640, 21, 630)
+
+[node name="@CollisionPolygon2D@34640" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="184"]
+polygon = PackedVector2Array(97, 609, 21, 630, 11, 529, 97, 607)
+
+[node name="@CollisionPolygon2D@34641" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="185"]
+polygon = PackedVector2Array(135, 556, 17, 487, 33, 469, 36, 469)
+
+[node name="@CollisionPolygon2D@34642" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="186"]
+polygon = PackedVector2Array(135, 556, 36, 469, 222, 412, 184, 551)
+
+[node name="@CollisionPolygon2D@34643" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="187"]
+polygon = PackedVector2Array(191, 551, 184, 551, 222, 412)
+
+[node name="@CollisionPolygon2D@34644" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="188"]
+polygon = PackedVector2Array(-288, -383, -194, -573, -193, -573)
+
+[node name="@CollisionPolygon2D@34645" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="189"]
+polygon = PackedVector2Array(-71, 1129, -85, 1122, -85, 1121, 58, 795)
+
+[node name="@CollisionPolygon2D@34646" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="190"]
+polygon = PackedVector2Array(1004, 137, 954, 236, 953, 236, 205, -367)
+
+[node name="@CollisionPolygon2D@34647" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="191"]
+polygon = PackedVector2Array(-1208, 544, -1229, 533, -1229, 532, -969, 154)
+
+[node name="@CollisionPolygon2D@34648" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="192"]
+polygon = PackedVector2Array(302, 935, 303, 935, 313, 954, 265, 1026, 246, 1033)
+
+[node name="@CollisionPolygon2D@34649" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="193"]
+polygon = PackedVector2Array(506, 1068, 506, 1069, 459, 1094)
+
+[node name="@CollisionPolygon2D@34650" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="194"]
+polygon = PackedVector2Array(1288, 453, 1241, 454, 1227, 429, 1227, 425)
+
+[node name="@CollisionPolygon2D@34651" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="195"]
+polygon = PackedVector2Array(-1596, 375, -1670, 335, -1670, 334)
+
+[node name="@CollisionPolygon2D@34652" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="196"]
+polygon = PackedVector2Array(1208, 356, 1206, 322, 1236, 303, 1239, 303)
+
+[node name="@CollisionPolygon2D@34653" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="197"]
+polygon = PackedVector2Array(179, 175, 179, 176, 125, 272, 124, 272, -68, -362, -67, -362, 60, -317)
+
+[node name="@CollisionPolygon2D@34654" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="198"]
+polygon = PackedVector2Array(-781, -164, -735, -238, -734, -238, -537, 449)
+
+[node name="@CollisionPolygon2D@34655" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="199"]
+polygon = PackedVector2Array(-1543, 32, -1543, 31, -1480, -9, -1477, -9)
+
+[node name="@CollisionPolygon2D@34656" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="200"]
+polygon = PackedVector2Array(-1655, 64, -1637, 36, -1635, 36, -1655, 126)
+
+[node name="@CollisionPolygon2D@34657" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="201"]
+polygon = PackedVector2Array(1107, 584, 1090, 573, 1090, 571, 1192, 543)
+
+[node name="@CollisionPolygon2D@34658" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="202"]
+polygon = PackedVector2Array(-146, 845, -120, 805, -118, 805, -146, 846)
+
+[node name="@CollisionPolygon2D@34659" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="203"]
+polygon = PackedVector2Array(100, 1090, 100, 1091, 50, 1124, 48, 1124, 58, 795)
+
+[node name="@CollisionPolygon2D@34660" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="204"]
+polygon = PackedVector2Array(-1069, 23, -1052, 17, -1042, 17, -1008, 23, -983, 40, -983, 42, -984, 132, -1082, 34)
+
+[node name="@CollisionPolygon2D@34661" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="205"]
+polygon = PackedVector2Array(543, 746, 654, 635, 655, 635, 705, 706, 704, 731, 548, 760)
+
+[node name="@CollisionPolygon2D@34662" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="206"]
+polygon = PackedVector2Array(704, 731, 588, 894, 587, 894, 548, 771, 548, 760)
+
+[node name="@CollisionPolygon2D@34663" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="207"]
+polygon = PackedVector2Array(431, 767, 431, 768, 418, 785, 416, 785, 199, 610, 199, 607)
+
+[node name="@CollisionPolygon2D@34664" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="208"]
+polygon = PackedVector2Array(338, 912, 328, 925, 326, 925, 91, 764)
+
+[node name="@CollisionPolygon2D@34665" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="209"]
+polygon = PackedVector2Array(1001, 382, 1021, 357, 1023, 357)
+
+[node name="@CollisionPolygon2D@34666" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="210"]
+polygon = PackedVector2Array(-1560, 438, -1576, 425, -1576, 423, -1337, -1)
+
+[node name="@CollisionPolygon2D@34667" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="211"]
+polygon = PackedVector2Array(1288, 453, 1227, 425, 1219, 395)
+
+[node name="@CollisionPolygon2D@34668" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="212"]
+polygon = PackedVector2Array(587, 894, 536, 954, 527, 954, 520, 946, 520, 942)
+
+[node name="@CollisionPolygon2D@34669" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="213"]
+polygon = PackedVector2Array(587, 894, 520, 942, 520, 928, 548, 771)
+
+[node name="@CollisionPolygon2D@34670" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="214"]
+polygon = PackedVector2Array(-181, 1150, -198, 1170, -200, 1170, -253, 1017)
+
+[node name="@CollisionPolygon2D@34671" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="215"]
+polygon = PackedVector2Array(1586, 372, 1572, 388, 1570, 388, 1590, 340)
+
+[node name="@CollisionPolygon2D@34672" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="216"]
+polygon = PackedVector2Array(-118, 1095, -139, 1119, -142, 1119, -118, 1092)
+
+[node name="@CollisionPolygon2D@34673" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="217"]
+polygon = PackedVector2Array(-471, 1024, -443, 992, -441, 992, -350, 1181)
+
+[node name="@CollisionPolygon2D@34674" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="218"]
+polygon = PackedVector2Array(477, -435, 633, -438, 741, -425, 791, -409, 998, 68, 998, 95)
+
+[node name="@CollisionPolygon2D@34675" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="219"]
+polygon = PackedVector2Array(-465, 1184, -482, 1169, -482, 1167)
+
+[node name="@CollisionPolygon2D@34676" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="220"]
+polygon = PackedVector2Array(124, 272, 45, 360, 43, 360, -68, -362)
+
+[node name="@CollisionPolygon2D@34677" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="221"]
+polygon = PackedVector2Array(-231, 891, -211, 869, -209, 869, -118, 1092)
+
+[node name="@CollisionPolygon2D@34678" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="222"]
+polygon = PackedVector2Array(302, 935, 58, 795, 58, 794, 91, 764, 326, 925)
+
+[node name="@CollisionPolygon2D@34679" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="223"]
+polygon = PackedVector2Array(-1229, 532, -1256, 507, -1256, 505, -969, 154)
+
+[node name="@CollisionPolygon2D@34680" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="224"]
+polygon = PackedVector2Array(-174, 1126, -253, 1017, -253, 1016, -237, 1001, -118, 1092, -142, 1119)
+
+[node name="@CollisionPolygon2D@34681" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="225"]
+polygon = PackedVector2Array(132, 665, 166, 629, 168, 629, 371, 814)
+
+[node name="@CollisionPolygon2D@34682" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="226"]
+polygon = PackedVector2Array(-111, 1093, -118, 1092, -146, 846, -60, 793, -9, 770, 25, 789, -109, 1093)
+
+[node name="@CollisionPolygon2D@34683" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="227"]
+polygon = PackedVector2Array(469, -435, 477, -435, 998, 95, 403, -422)
+
+[node name="@CollisionPolygon2D@34684" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="228"]
+polygon = PackedVector2Array(-1082, 34, -1071, 23, -1069, 23)
+
+[node name="@CollisionPolygon2D@34685" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="229"]
+polygon = PackedVector2Array(1208, 361, 1208, 356, 1239, 303, 1315, 282, 1321, 282)
+
+[node name="@CollisionPolygon2D@34686" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="230"]
+polygon = PackedVector2Array(1550, 253, 1568, 272, 1568, 274, 1519, 410)
+
+[node name="@CollisionPolygon2D@34687" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="231"]
+polygon = PackedVector2Array(1192, 543, 1090, 571, 1062, 525)
+
+[node name="@CollisionPolygon2D@34688" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="232"]
+polygon = PackedVector2Array(1201, 431, 1062, 522, 1033, 453, 1198, 404)
+
+[node name="@CollisionPolygon2D@34689" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="233"]
+polygon = PackedVector2Array(1175, 370, 1198, 403, 1198, 404, 1033, 453, 1031, 453, 1023, 449, 999, 421, 1137, 355)
+
+[node name="@CollisionPolygon2D@34690" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="234"]
+polygon = PackedVector2Array(583, 1063, 568, 1077, 565, 1077, 535, 986)
+
+[node name="@CollisionPolygon2D@34691" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="235"]
+polygon = PackedVector2Array(-734, -238, -657, -305, -655, -305, -537, 449)
+
+[node name="@CollisionPolygon2D@34692" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="236"]
+polygon = PackedVector2Array(-74, -659, -74, -645, -93, -623, -90, -681)
+
+[node name="@CollisionPolygon2D@34693" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="237"]
+polygon = PackedVector2Array(-143, -682, -118, -688, -93, -623)
+
+[node name="@CollisionPolygon2D@34694" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="238"]
+polygon = PackedVector2Array(-146, -682, -143, -682, -93, -623, -169, -664)
+
+[node name="@CollisionPolygon2D@34695" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="239"]
+polygon = PackedVector2Array(-161, -623, -161, -624, -93, -623, -93, -595)
+
+[node name="@CollisionPolygon2D@34696" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="240"]
+polygon = PackedVector2Array(-193, -573, -161, -623, -93, -595)
+
+[node name="@CollisionPolygon2D@34697" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="241"]
+polygon = PackedVector2Array(947, 382, 972, 395, 984, 424, 918, 384)
+
+[node name="@CollisionPolygon2D@34698" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="242"]
+polygon = PackedVector2Array(43, 360, -32, 423, -34, 423, -68, -362)
+
+[node name="@CollisionPolygon2D@34699" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="243"]
+polygon = PackedVector2Array(573, 997, 591, 1019, 591, 1022)
+
+[node name="@CollisionPolygon2D@34700" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="244"]
+polygon = PackedVector2Array(996, 514, 992, 524, 972, 540, 969, 540, 989, 465)
+
+[node name="@CollisionPolygon2D@34701" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="245"]
+polygon = PackedVector2Array(535, 986, 565, 1077, 535, 1079, 506, 1068, 525, 986)
+
+[node name="@CollisionPolygon2D@34702" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="246"]
+polygon = PackedVector2Array(510, 968, 525, 986, 506, 1068)
+
+[node name="@CollisionPolygon2D@34703" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="247"]
+polygon = PackedVector2Array(404, 968, 352, 1076, 323, 1055, 392, 954)
+
+[node name="@CollisionPolygon2D@34704" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="248"]
+polygon = PackedVector2Array(315, 954, 287, 1046, 265, 1026, 313, 954)
+
+[node name="@CollisionPolygon2D@34705" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="249"]
+polygon = PackedVector2Array(-1269, 436, -1306, 465, -1316, 465, -1398, 439, -1337, -1, -1299, -2, -1251, 16)
+
+[node name="@CollisionPolygon2D@34706" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="250"]
+polygon = PackedVector2Array(246, 1034, 236, 1059, 202, 1084, 199, 1084, 246, 1033)
+
+[node name="@CollisionPolygon2D@34707" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="251"]
+polygon = PackedVector2Array(201, -367, 205, -367, 953, 236, 838, 404, 62, -317)
+
+[node name="@CollisionPolygon2D@34708" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="252"]
+polygon = PackedVector2Array(60, -317, 62, -317, 838, 404, 382, 74)
+
+[node name="@CollisionPolygon2D@34709" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="253"]
+polygon = PackedVector2Array(-1655, 126, -1635, 36, -1603, 24, -1598, 24, -1543, 32, -1655, 128)
+
+[node name="@CollisionPolygon2D@34710" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="254"]
+polygon = PackedVector2Array(-959, 82, -964, 111, -984, 132, -983, 42, -959, 78)
+
+[node name="@CollisionPolygon2D@34711" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="255"]
+polygon = PackedVector2Array(-1089, 34, -1082, 34, -984, 132, -984, 136, -1267, 436)
+
+[node name="@CollisionPolygon2D@34712" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="256"]
+polygon = PackedVector2Array(989, 465, 969, 540, 932, 553, 927, 553)
+
+[node name="@CollisionPolygon2D@34713" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="257"]
+polygon = PackedVector2Array(989, 458, 989, 465, 927, 553, 675, 606, 838, 404, 841, 404, 984, 424)
+
+[node name="@CollisionPolygon2D@34714" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="258"]
+polygon = PackedVector2Array(246, 1033, 199, 1084, 171, 1092, 152, 1092, 130, 1087, 302, 935)
+
+[node name="@CollisionPolygon2D@34715" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="259"]
+polygon = PackedVector2Array(302, 935, 130, 1087, 118, 1087)
+
+[node name="@CollisionPolygon2D@34716" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="260"]
+polygon = PackedVector2Array(913, 384, 918, 384, 984, 424, 841, 404)
+
+[node name="@CollisionPolygon2D@34717" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="261"]
+polygon = PackedVector2Array(-1407, 439, -1444, 461, -1447, 461)
+
+[node name="@CollisionPolygon2D@34718" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="262"]
+polygon = PackedVector2Array(-1192, -3, -1160, -5, -1132, 3, -1115, 21, -1267, 436)
+
+[node name="@CollisionPolygon2D@34719" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="263"]
+polygon = PackedVector2Array(302, 935, 118, 1087, 100, 1090, 58, 795)
+
+[node name="@CollisionPolygon2D@34720" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="264"]
+polygon = PackedVector2Array(-655, -305, -603, -335, -600, -335, -537, 449)
+
+[node name="@CollisionPolygon2D@34721" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="265"]
+polygon = PackedVector2Array(381, 74, 293, 123, 290, 123, 60, -317)
+
+[node name="@CollisionPolygon2D@34722" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="266"]
+polygon = PackedVector2Array(-471, 1099, -482, 1079, -482, 1075)
+
+[node name="@CollisionPolygon2D@34723" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="267"]
+polygon = PackedVector2Array(-1115, 21, -1113, 21, -1089, 34, -1267, 436)
+
+[node name="@CollisionPolygon2D@34724" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="268"]
+polygon = PackedVector2Array(-118, 805, -101, 796, -96, 796, -146, 846)
+
+[node name="@CollisionPolygon2D@34725" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="269"]
+polygon = PackedVector2Array(-146, 846, -96, 796, -60, 793)
+
+[node name="@CollisionPolygon2D@34726" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="270"]
+polygon = PackedVector2Array(-423, 1197, -485, 1117, -471, 1101, -386, 1195)
+
+[node name="@CollisionPolygon2D@34727" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="271"]
+polygon = PackedVector2Array(-350, 1181, -441, 992, -398, 973, -392, 973)
+
+[node name="@CollisionPolygon2D@34728" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="272"]
+polygon = PackedVector2Array(-350, 1181, -286, 991, -253, 1017, -330, 1192)
+
+[node name="@CollisionPolygon2D@34729" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="273"]
+polygon = PackedVector2Array(-250, 1189, -254, 1189, -253, 1017, -200, 1170)
+
+[node name="@CollisionPolygon2D@34730" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="274"]
+polygon = PackedVector2Array(-118, 1092, -237, 1001, -237, 1000)
+
+[node name="@CollisionPolygon2D@34731" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="275"]
+polygon = PackedVector2Array(-118, 1092, -209, 869, -146, 846)
+
+[node name="@CollisionPolygon2D@34732" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="276"]
+polygon = PackedVector2Array(-109, 1093, 25, 789, 29, 789, 58, 795, -85, 1121)
+
+[node name="@CollisionPolygon2D@34733" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="277"]
+polygon = PackedVector2Array(9, 1138, 3, 1138, 58, 795, 48, 1124)
+
+[node name="@CollisionPolygon2D@34734" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="278"]
+polygon = PackedVector2Array(371, 814, 168, 629, 199, 610, 416, 785)
+
+[node name="@CollisionPolygon2D@34735" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="279"]
+polygon = PackedVector2Array(431, 767, 199, 607, 191, 551, 222, 412, 474, 762)
+
+[node name="@CollisionPolygon2D@34736" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="280"]
+polygon = PackedVector2Array(675, 606, 279, 284, 371, 108)
+
+[node name="@CollisionPolygon2D@34737" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="281"]
+polygon = PackedVector2Array(675, 606, 371, 108, 371, 105, 382, 74, 838, 404)
+
+[node name="@CollisionPolygon2D@34738" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="282"]
+polygon = PackedVector2Array(-1735, 252, -1735, 248, -1715, 172, -1655, 128, -1714, 294)
+
+[node name="@CollisionPolygon2D@34739" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="283"]
+polygon = PackedVector2Array(-1594, 375, -1386, -26, -1341, -1)
+
+[node name="@CollisionPolygon2D@34740" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="284"]
+polygon = PackedVector2Array(-1594, 375, -1341, -1, -1337, -1, -1576, 423)
+
+[node name="@CollisionPolygon2D@34741" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="285"]
+polygon = PackedVector2Array(-1398, 439, -1407, 439, -1337, -1)
+
+[node name="@CollisionPolygon2D@34742" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="286"]
+polygon = PackedVector2Array(-1267, 436, -1269, 436, -1251, 16, -1235, 16)
+
+[node name="@CollisionPolygon2D@34743" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="287"]
+polygon = PackedVector2Array(-1267, 436, -1235, 16, -1196, -3, -1192, -3)
+
+[node name="@CollisionPolygon2D@34744" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="288"]
+polygon = PackedVector2Array(-1267, 436, -984, 136, -972, 154)
+
+[node name="@CollisionPolygon2D@34745" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="289"]
+polygon = PackedVector2Array(-1271, 473, -1271, 464, -1267, 436, -972, 154, -969, 154, -1256, 505)
+
+[node name="@CollisionPolygon2D@34746" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="290"]
+polygon = PackedVector2Array(-632, 475, -953, 543, -958, 543, -969, 154, -832, 105)
+
+[node name="@CollisionPolygon2D@34747" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="291"]
+polygon = PackedVector2Array(-537, 449, -600, -335, -535, -362, -531, -362)
+
+[node name="@CollisionPolygon2D@34748" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="292"]
+polygon = PackedVector2Array(-537, 449, -531, -362, -439, -383, -425, -383, -288, -382, -453, 479)
+
+[node name="@CollisionPolygon2D@34749" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="293"]
+polygon = PackedVector2Array(-227, 496, -241, 496, -68, -362, -143, 476)
+
+[node name="@CollisionPolygon2D@34750" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="294"]
+polygon = PackedVector2Array(-140, 476, -143, 476, -68, -362, -34, 423)
+
+[node name="@CollisionPolygon2D@34751" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="295"]
+polygon = PackedVector2Array(290, 123, 179, 175, 60, -317)
+
+[node name="@CollisionPolygon2D@34752" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="296"]
+polygon = PackedVector2Array(382, 74, 381, 74, 60, -317)
+
+[node name="@CollisionPolygon2D@34753" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="297"]
+polygon = PackedVector2Array(1023, 449, 986, 424, 999, 421)
+
+[node name="@CollisionPolygon2D@34754" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="298"]
+polygon = PackedVector2Array(1219, 395, 1217, 395, 1208, 361)
+
+[node name="@CollisionPolygon2D@34755" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="299"]
+polygon = PackedVector2Array(1523, 410, 1519, 410, 1568, 274, 1590, 335, 1590, 340, 1570, 388)
+
+[node name="@CollisionPolygon2D@34756" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="300"]
+polygon = PackedVector2Array(285, 924, 249, 910, 251, 910)
+
+[node name="@CollisionPolygon2D@34757" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="301"]
+polygon = PackedVector2Array(285, 924, 251, 910, 293.8186, 889.0886, 288, 924)
+
+[node name="@CollisionPolygon2D@34758" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="302"]
+polygon = PackedVector2Array(293.8186, 889.0886, 294, 889, 294, 888)
+
+[node name="@CollisionPolygon2D@34759" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="303"]
+polygon = PackedVector2Array(32, 807, 34, 807, 34, 808, 33, 808)
+
+[node name="@CollisionPolygon2D@34760" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="304"]
+polygon = PackedVector2Array(34, 808, 35, 808, 35, 809, 33, 809)
+
+[node name="@CollisionPolygon2D@34761" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="305"]
+polygon = PackedVector2Array(34, 808, 33, 809, 33, 808)
+
+[node name="@CollisionPolygon2D@34762" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="306"]
+polygon = PackedVector2Array(32, 807, 33, 808, 32, 808)
+
+[node name="@CollisionPolygon2D@34763" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="307"]
+polygon = PackedVector2Array(-963, 488, -965, 488, -965, 487, -963, 487)
+
+[node name="@CollisionPolygon2D@34764" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="308"]
+polygon = PackedVector2Array(-820, 178, -820, 177, -802, 235)
+
+[node name="@CollisionPolygon2D@34765" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="309"]
+polygon = PackedVector2Array(-801, 235, -778, 280, -781, 280)
+
+[node name="@CollisionPolygon2D@34766" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="310"]
+polygon = PackedVector2Array(-801, 235, -781, 280, -938, 330, -802, 235)
+
+[node name="@CollisionPolygon2D@34767" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="311"]
+polygon = PackedVector2Array(-877, 202, -820, 178, -802, 235, -938, 330)
+
+[node name="@CollisionPolygon2D@34768" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="312"]
+polygon = PackedVector2Array(-879, 202, -877, 202, -938, 330, -917, 228)
+
+[node name="@CollisionPolygon2D@34769" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="313"]
+polygon = PackedVector2Array(-960, 271, -919, 228, -917, 228, -938, 330, -945, 330)
+
+[node name="@CollisionPolygon2D@34770" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="314"]
+polygon = PackedVector2Array(-960, 271, -945, 330, -978, 332, -978, 331)
+
+[node name="@CollisionPolygon2D@34771" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="315"]
+polygon = PackedVector2Array(-961, 271, -960, 271, -978, 331, -988, 323, -987, 314)
+
+[node name="@CollisionPolygon2D@34772" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="316"]
+polygon = PackedVector2Array(-987, 314, -988, 323, -988, 314)
+
+[node name="@CollisionPolygon2D@34773" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="317"]
+polygon = PackedVector2Array(196, -192, 156, -253, 159, -253)
+
+[node name="@CollisionPolygon2D@34774" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="318"]
+polygon = PackedVector2Array(196, -192, 159, -253, 248, -284, 197, -192)
+
+[node name="@CollisionPolygon2D@34775" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="319"]
+polygon = PackedVector2Array(366, -169, 344, -295, 344, -296, 407, -296, 407, -295, 368, -169)
+
+[node name="@CollisionPolygon2D@34776" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="320"]
+polygon = PackedVector2Array(366, -169, 220, -99, 219, -99, 197, -192, 248, -284, 253, -284)
+
+[node name="@CollisionPolygon2D@34777" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="321"]
+polygon = PackedVector2Array(366, -169, 253, -284, 344, -295)
+
+[node name="@CollisionPolygon2D@34778" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="322"]
+polygon = PackedVector2Array(422, -206, 368, -169, 407, -295, 435, -285, 435, -284)
+
+[node name="@CollisionPolygon2D@34779" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="323"]
+polygon = PackedVector2Array(424, -206, 422, -206, 435, -284, 457, -263, 457, -251, 449, -236)
+
+[node name="@CollisionPolygon2D@34780" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="324"]
+polygon = PackedVector2Array(449, -236, 457, -251, 450, -236)
+
+[node name="@CollisionPolygon2D@34781" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="325"]
+polygon = PackedVector2Array(-125, -371, -253, -381, -252, -381)
+
+[node name="@CollisionPolygon2D@34782" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="326"]
+polygon = PackedVector2Array(-125, -371, -252, -381, -169, -415)
+
+[node name="@CollisionPolygon2D@34783" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="327"]
+polygon = PackedVector2Array(-169, -416, -119, -371, -125, -371, -169, -415)
+
+[node name="@CollisionPolygon2D@34784" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="328"]
+polygon = PackedVector2Array(-123, -436, -123, -437, -120, -417, -122, -417)
+
+[node name="@CollisionPolygon2D@34785" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="329"]
+polygon = PackedVector2Array(-122, -417, -142, -428, -141, -428)
+
+[node name="@CollisionPolygon2D@34786" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="330"]
+polygon = PackedVector2Array(-122, -417, -141, -428, -123, -436)
+
+[node name="@CollisionPolygon2D@34787" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="331"]
+polygon = PackedVector2Array(-217, -442, -192, -429, -195, -429, -217, -441)
+
+[node name="@CollisionPolygon2D@34788" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="332"]
+polygon = PackedVector2Array(-217, -441, -195, -429, -234, -416, -234, -417)
+
+[node name="@CollisionPolygon2D@34789" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="333"]
+polygon = PackedVector2Array(-171, -439, -205, -454, -204, -454)
+
+[node name="@CollisionPolygon2D@34790" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="334"]
+polygon = PackedVector2Array(-153, -487, -153, -488, -125, -455, -128, -455)
+
+[node name="@CollisionPolygon2D@34791" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="335"]
+polygon = PackedVector2Array(-171, -439, -204, -454, -153, -487, -128, -455, -166, -439)
+
+[node name="@CollisionPolygon2D@34792" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="336"]
+polygon = PackedVector2Array(-121, -506, -121, -507, -119, -494)
+
+[node name="@CollisionPolygon2D@34793" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="337"]
+polygon = PackedVector2Array(-120, -494, -128, -502, -127, -502, -119, -494)
+
+[node name="@CollisionPolygon2D@34794" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="338"]
+polygon = PackedVector2Array(-127, -502, -121, -506, -119, -494)
+
+[node name="@CollisionPolygon2D@34795" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="339"]
+polygon = PackedVector2Array(-187, -518, -171, -506, -172, -506, -187, -517)
+
+[node name="@CollisionPolygon2D@34796" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="340"]
+polygon = PackedVector2Array(-172, -506, -198, -491, -198, -494, -187, -517)
+
+[node name="@CollisionPolygon2D@34797" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="341"]
+polygon = PackedVector2Array(-134, -594, -134, -595, -121, -561)
+
+[node name="@CollisionPolygon2D@34798" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="342"]
+polygon = PackedVector2Array(-150, -516, -179, -535, -178, -535)
+
+[node name="@CollisionPolygon2D@34799" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="343"]
+polygon = PackedVector2Array(-150, -516, -178, -535, -134, -594, -121, -561, -121, -552)
+
+[node name="@CollisionPolygon2D@34800" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="344"]
+polygon = PackedVector2Array(-120, -528, -150, -515, -150, -516, -121, -552)
+
+[node name="@CollisionPolygon2D@34801" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="345"]
+polygon = PackedVector2Array(-120, -528, -121, -552, -119, -528)
+
+[node name="@CollisionPolygon2D@34802" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="346"]
+polygon = PackedVector2Array(-1628, -547, -1613, -552, -1613, -551)
+
+[node name="@CollisionPolygon2D@34803" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="347"]
+polygon = PackedVector2Array(-1381, -612, -1372, -584, -1373, -584, -1423, -634)
+
+[node name="@CollisionPolygon2D@34804" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="348"]
+polygon = PackedVector2Array(-1226, -400, -1220, -367, -1221, -367, -1282, -450, -1281, -450)
+
+[node name="@CollisionPolygon2D@34805" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="349"]
+polygon = PackedVector2Array(-1484, -645, -1484, -646, -1423, -635, -1423, -634)
+
+[node name="@CollisionPolygon2D@34806" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="350"]
+polygon = PackedVector2Array(-1701, -244, -1702, -267, -1701, -267, -1687, -205)
+
+[node name="@CollisionPolygon2D@34807" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="351"]
+polygon = PackedVector2Array(-1550, -145, -1585, -145, -1585, -146)
+
+[node name="@CollisionPolygon2D@34808" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="352"]
+polygon = PackedVector2Array(-1647, -490, -1646, -522, -1645, -522)
+
+[node name="@CollisionPolygon2D@34809" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="353"]
+polygon = PackedVector2Array(-1358, -534, -1330, -532, -1330, -531)
+
+[node name="@CollisionPolygon2D@34810" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="354"]
+polygon = PackedVector2Array(-1699, -425, -1696, -450, -1695, -450)
+
+[node name="@CollisionPolygon2D@34811" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="355"]
+polygon = PackedVector2Array(-1701, -267, -1696, -290, -1695, -290, -1687, -205)
+
+[node name="@CollisionPolygon2D@34812" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="356"]
+polygon = PackedVector2Array(-1673, -350, -1674, -350, -1681, -381, -1647, -488)
+
+[node name="@CollisionPolygon2D@34813" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="357"]
+polygon = PackedVector2Array(-1262, -276, -1284, -183, -1285, -183)
+
+[node name="@CollisionPolygon2D@34814" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="358"]
+polygon = PackedVector2Array(-1221, -367, -1228, -339, -1229, -339, -1282, -450)
+
+[node name="@CollisionPolygon2D@34815" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="359"]
+polygon = PackedVector2Array(-1262, -280, -1262, -276, -1385, -130, -1407, -124, -1421, -124, -1432, -127, -1432, -128, -1385, -541, -1384, -541, -1370, -534, -1282, -450)
+
+[node name="@CollisionPolygon2D@34816" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="360"]
+polygon = PackedVector2Array(-1579, -620, -1578, -552, -1579, -552, -1593, -585, -1593, -596, -1581, -620)
+
+[node name="@CollisionPolygon2D@34817" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="361"]
+polygon = PackedVector2Array(-1677, -472, -1647, -488, -1681, -381, -1682, -381, -1699, -418, -1699, -425, -1695, -450)
+
+[node name="@CollisionPolygon2D@34818" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="362"]
+polygon = PackedVector2Array(-1423, -634, -1381, -614, -1381, -612)
+
+[node name="@CollisionPolygon2D@34819" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="363"]
+polygon = PackedVector2Array(-1583, -537, -1550, -145, -1585, -146, -1672, -190, -1672, -191, -1647, -488, -1586, -537)
+
+[node name="@CollisionPolygon2D@34820" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="364"]
+polygon = PackedVector2Array(-1330, -531, -1307, -518, -1307, -516)
+
+[node name="@CollisionPolygon2D@34821" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="365"]
+polygon = PackedVector2Array(-1647, -490, -1645, -522, -1630, -547, -1628, -547, -1586, -537, -1647, -488)
+
+[node name="@CollisionPolygon2D@34822" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="366"]
+polygon = PackedVector2Array(-1695, -450, -1679, -472, -1677, -472)
+
+[node name="@CollisionPolygon2D@34823" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="367"]
+polygon = PackedVector2Array(-1647, -488, -1672, -191, -1687, -203, -1687, -205, -1675, -325)
+
+[node name="@CollisionPolygon2D@34824" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="368"]
+polygon = PackedVector2Array(-1281, -450, -1226, -402, -1226, -400)
+
+[node name="@CollisionPolygon2D@34825" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="369"]
+polygon = PackedVector2Array(-1484, -645, -1423, -634, -1373, -584, -1385, -541, -1537, -639)
+
+[node name="@CollisionPolygon2D@34826" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="370"]
+polygon = PackedVector2Array(-1285, -183, -1303, -166, -1305, -166, -1262, -276)
+
+[node name="@CollisionPolygon2D@34827" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="371"]
+polygon = PackedVector2Array(-1628, -547, -1613, -551, -1586, -537)
+
+[node name="@CollisionPolygon2D@34828" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="372"]
+polygon = PackedVector2Array(-1282, -450, -1229, -339, -1262, -280)
+
+[node name="@CollisionPolygon2D@34829" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="373"]
+polygon = PackedVector2Array(-1358, -534, -1330, -531, -1307, -516, -1282, -450, -1370, -534)
+
+[node name="@CollisionPolygon2D@34830" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="374"]
+polygon = PackedVector2Array(-1262, -276, -1305, -166, -1382, -130, -1385, -130)
+
+[node name="@CollisionPolygon2D@34831" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="375"]
+polygon = PackedVector2Array(-1385, -541, -1432, -128, -1476, -170)
+
+[node name="@CollisionPolygon2D@34832" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="376"]
+polygon = PackedVector2Array(-1541, -639, -1537, -639, -1385, -541, -1476, -170, -1484, -170, -1579, -620)
+
+[node name="@CollisionPolygon2D@34833" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="377"]
+polygon = PackedVector2Array(-1579, -620, -1484, -170, -1550, -145, -1578, -552)
+
+[node name="@CollisionPolygon2D@34834" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="378"]
+polygon = PackedVector2Array(-1580, -542, -1578, -552, -1550, -145, -1580, -540)
+
+[node name="@CollisionPolygon2D@34835" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="379"]
+polygon = PackedVector2Array(-1583, -537, -1580, -540, -1550, -145)
+
+[node name="@CollisionPolygon2D@34836" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="380"]
+polygon = PackedVector2Array(-1687, -205, -1701, -236, -1701, -244)
+
+[node name="@CollisionPolygon2D@34837" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="381"]
+polygon = PackedVector2Array(-1687, -205, -1695, -290, -1675, -325)
+
+[node name="@CollisionPolygon2D@34838" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="382"]
+polygon = PackedVector2Array(-1673, -350, -1647, -488, -1675, -325, -1675, -328)
+
+[node name="@CollisionPolygon2D@34839" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="383"]
+polygon = PackedVector2Array(-362, 860, -357, 878, -358, 878, -384, 846)
+
+[node name="@CollisionPolygon2D@34840" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="384"]
+polygon = PackedVector2Array(-576, 882, -583, 853, -582, 853)
+
+[node name="@CollisionPolygon2D@34841" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="385"]
+polygon = PackedVector2Array(-512, 790, -512, 789, -482, 795, -482, 796)
+
+[node name="@CollisionPolygon2D@34842" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="386"]
+polygon = PackedVector2Array(-366, 895, -362, 916, -363, 916)
+
+[node name="@CollisionPolygon2D@34843" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="387"]
+polygon = PackedVector2Array(-556, 937, -559, 918, -558, 918)
+
+[node name="@CollisionPolygon2D@34844" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="388"]
+polygon = PackedVector2Array(-582, 853, -575, 828, -574, 828)
+
+[node name="@CollisionPolygon2D@34845" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="389"]
+polygon = PackedVector2Array(-433, 808, -428, 808, -407, 814, -407, 815, -454, 959, -465, 817)
+
+[node name="@CollisionPolygon2D@34846" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="390"]
+polygon = PackedVector2Array(-490, 971, -504, 971, -535, 962, -535, 961, -468, 817, -465, 817, -454, 959, -454, 960)
+
+[node name="@CollisionPolygon2D@34847" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="391"]
+polygon = PackedVector2Array(-363, 916, -368, 933, -369, 933)
+
+[node name="@CollisionPolygon2D@34848" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="392"]
+polygon = PackedVector2Array(-384, 846, -362, 858, -362, 860)
+
+[node name="@CollisionPolygon2D@34849" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="393"]
+polygon = PackedVector2Array(-574, 828, -557, 807, -555, 807)
+
+[node name="@CollisionPolygon2D@34850" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="394"]
+polygon = PackedVector2Array(-407, 815, -395, 825, -395, 827, -454, 959)
+
+[node name="@CollisionPolygon2D@34851" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="395"]
+polygon = PackedVector2Array(-468, 817, -553, 904, -555, 904, -576, 884, -576, 882, -531, 794, -512, 790, -482, 796)
+
+[node name="@CollisionPolygon2D@34852" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="396"]
+polygon = PackedVector2Array(-388, 846, -384, 846, -358, 878, -366, 892, -454, 959)
+
+[node name="@CollisionPolygon2D@34853" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="397"]
+polygon = PackedVector2Array(-535, 961, -556, 940, -556, 937, -468, 817)
+
+[node name="@CollisionPolygon2D@34854" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="398"]
+polygon = PackedVector2Array(-363, 916, -369, 933, -397, 955, -400, 955, -366, 895)
+
+[node name="@CollisionPolygon2D@34855" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="399"]
+polygon = PackedVector2Array(-366, 895, -400, 955, -454, 959, -366, 892)
+
+[node name="@CollisionPolygon2D@34856" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="400"]
+polygon = PackedVector2Array(-395, 827, -388, 846, -454, 959)
+
+[node name="@CollisionPolygon2D@34857" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="401"]
+polygon = PackedVector2Array(-468, 817, -556, 937, -558, 918, -553, 904)
+
+[node name="@CollisionPolygon2D@34858" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="402"]
+polygon = PackedVector2Array(-531, 794, -576, 882, -582, 853, -574, 828, -555, 807, -534, 794)
+
+[node name="@CollisionPolygon2D@34859" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="403"]
+polygon = PackedVector2Array(-922, 1006, -922, 1005, -898, 1010, -898, 1011)
+
+[node name="@CollisionPolygon2D@34860" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="404"]
+polygon = PackedVector2Array(-980, 1054, -982, 1042, -981, 1042)
+
+[node name="@CollisionPolygon2D@34861" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="405"]
+polygon = PackedVector2Array(-843, 1054, -842, 1065, -843, 1065)
+
+[node name="@CollisionPolygon2D@34862" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="406"]
+polygon = PackedVector2Array(-872, 1092, -890, 1113, -909, 1113, -909, 1112, -872, 1085)
+
+[node name="@CollisionPolygon2D@34863" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="407"]
+polygon = PackedVector2Array(-934, 1113, -945, 1111, -945, 1110)
+
+[node name="@CollisionPolygon2D@34864" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="408"]
+polygon = PackedVector2Array(-889, 1030, -864, 1030, -856, 1034, -856, 1035, -952, 1098, -957, 1073)
+
+[node name="@CollisionPolygon2D@34865" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="409"]
+polygon = PackedVector2Array(-843, 1065, -851, 1077, -853, 1077)
+
+[node name="@CollisionPolygon2D@34866" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="410"]
+polygon = PackedVector2Array(-958, 1073, -962, 1024, -922, 1006, -898, 1011, -889, 1030, -957, 1073)
+
+[node name="@CollisionPolygon2D@34867" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="411"]
+polygon = PackedVector2Array(-872, 1085, -909, 1112, -919, 1106)
+
+[node name="@CollisionPolygon2D@34868" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="412"]
+polygon = PackedVector2Array(-958, 1073, -980, 1056, -980, 1054, -964, 1024, -962, 1024)
+
+[node name="@CollisionPolygon2D@34869" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="413"]
+polygon = PackedVector2Array(-980, 1054, -981, 1042, -964, 1024)
+
+[node name="@CollisionPolygon2D@34870" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="414"]
+polygon = PackedVector2Array(-952, 1098, -856, 1035, -843, 1051, -843, 1054)
+
+[node name="@CollisionPolygon2D@34871" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="415"]
+polygon = PackedVector2Array(-952, 1098, -843, 1054, -843, 1065, -853, 1077, -872, 1085)
+
+[node name="@CollisionPolygon2D@34872" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="416"]
+polygon = PackedVector2Array(-952, 1098, -872, 1085, -919, 1106, -921, 1106)
+
+[node name="@CollisionPolygon2D@34873" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="417"]
+polygon = PackedVector2Array(-952, 1098, -921, 1106, -929, 1113, -934, 1113, -945, 1110, -952, 1102)
+
+[node name="@CollisionPolygon2D@34874" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="418"]
+polygon = PackedVector2Array(-531, 1131, -519, 1165, -520, 1165)
+
+[node name="@CollisionPolygon2D@34875" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="419"]
+polygon = PackedVector2Array(-668, 1068, -668, 1067, -592, 1078, -592, 1079, -611, 1224)
+
+[node name="@CollisionPolygon2D@34876" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="420"]
+polygon = PackedVector2Array(-611, 1224, -700, 1233, -700, 1232)
+
+[node name="@CollisionPolygon2D@34877" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="421"]
+polygon = PackedVector2Array(-777, 1158, -777, 1155, -775, 1122, -774, 1122, -757, 1178, -758, 1178)
+
+[node name="@CollisionPolygon2D@34878" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="422"]
+polygon = PackedVector2Array(-520, 1165, -526, 1186, -527, 1186)
+
+[node name="@CollisionPolygon2D@34879" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="423"]
+polygon = PackedVector2Array(-700, 1232, -739, 1220, -739, 1219)
+
+[node name="@CollisionPolygon2D@34880" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="424"]
+polygon = PackedVector2Array(-578, 1107, -570, 1107, -549, 1114, -549, 1115, -582, 1200, -607, 1224, -611, 1224)
+
+[node name="@CollisionPolygon2D@34881" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="425"]
+polygon = PackedVector2Array(-757, 1178, -774, 1122, -751, 1091, -749, 1091, -611, 1224, -700, 1232, -739, 1219)
+
+[node name="@CollisionPolygon2D@34882" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="426"]
+polygon = PackedVector2Array(-549, 1115, -531, 1129, -531, 1131, -582, 1200)
+
+[node name="@CollisionPolygon2D@34883" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="427"]
+polygon = PackedVector2Array(-527, 1186, -536, 1197, -538, 1197)
+
+[node name="@CollisionPolygon2D@34884" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="428"]
+polygon = PackedVector2Array(-582, 1200, -582, 1202, -607, 1224)
+
+[node name="@CollisionPolygon2D@34885" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="429"]
+polygon = PackedVector2Array(-592, 1079, -579, 1092, -579, 1095, -611, 1224)
+
+[node name="@CollisionPolygon2D@34886" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="430"]
+polygon = PackedVector2Array(-739, 1219, -757, 1201, -757, 1178)
+
+[node name="@CollisionPolygon2D@34887" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="431"]
+polygon = PackedVector2Array(-611, 1224, -749, 1091, -668, 1068)
+
+[node name="@CollisionPolygon2D@34888" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="432"]
+polygon = PackedVector2Array(-611, 1224, -579, 1095, -578, 1107)
+
+[node name="@CollisionPolygon2D@34889" type="CollisionPolygon2D" parent="asteroid/StaticBody2D" index="433"]
+polygon = PackedVector2Array(-567, 1204, -582, 1200, -531, 1131, -520, 1165, -527, 1186, -538, 1197, -553, 1204)
+
+[node name="asteroid" parent="asteroid" index="2"]
+material = SubResource("ShaderMaterial_5vw27")
+position = Vector2(0, 0)
+scale = Vector2(1, 1)
+
+[node name="MaskVP" type="SubViewport" parent="asteroid/asteroid" index="0"]
+disable_3d = true
+transparent_bg = true
+debug_draw = 3
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="asteroid/asteroid/MaskVP"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stamps" type="Node2D" parent="asteroid/asteroid/MaskVP"]
+
+[node name="polygons_generation" type="Node2D" parent="asteroid" node_paths=PackedStringArray("map_sprite", "static_body")]
+script = ExtResource("12_vivmo")
+map_sprite = NodePath("../asteroid")
+static_body = NodePath("../StaticBody2D")
+smoothness_epsilon = 4.0
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(979, 219)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="input_event" from="asteroid/StaticBody2D/Area2D" to="asteroid/StaticBody2D/Area2D" method="_on_input_event"]
+
+[editable path="bob"]
+[editable path="asteroid"]
